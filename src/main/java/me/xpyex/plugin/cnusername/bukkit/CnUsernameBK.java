@@ -40,14 +40,6 @@ public final class CnUsernameBK extends JavaPlugin {
         }
     }
 
-    public static boolean a(String name) {
-        return Pattern.compile("^[a-zA-Z0-9_\\u4e00-\\u9fa5]{3,16}$").matcher(name).matches();
-    }
-
-    public static boolean isAllowedInUnquotedString(char c) {
-        return ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_' || c == '-' || c == '.' || c == '+') || (c > '\u4e00' && c < '\u9fa5');
-    }
-
     @Override
     public void onDisable() {
         Logging.info("已卸载");
