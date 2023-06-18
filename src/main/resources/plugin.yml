@@ -1,0 +1,4 @@
+name: AnyUsername
+version: '${version}'
+main: me.xpyex.plugin.cnusername.bukkit.CnUsernameBK
+api-version: 1.18
