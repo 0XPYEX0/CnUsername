@@ -4,9 +4,8 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
-import java.util.regex.Pattern;
-import me.xpyex.model.cnusername.CnUsername;
 import me.xpyex.model.cnusername.ClassVisitorLoginListener;
+import me.xpyex.model.cnusername.CnUsername;
 import me.xpyex.model.cnusername.Logging;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,6 +48,7 @@ public final class CnUsernameBK extends JavaPlugin {
     @Override
     public void onEnable() {
         Logging.info("已加载");
+        Logging.info("如遇Bug，或需提出建议: QQ1723275529");
         Logging.info("开始修改类 " + CLASS_NAME);
         try {
             ClassReader classReader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(CnUsername.CLASS_PATH_LOGIN + ".class"));

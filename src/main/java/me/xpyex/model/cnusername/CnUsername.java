@@ -17,6 +17,7 @@ public class CnUsername {
 
     public static void premain(String agentArgs, Instrumentation inst) {
         Logging.info("开始载入模块 CnUsername");
+        Logging.info("如遇Bug，或需提出建议: QQ1723275529");
         Logging.info("等待Minecraft加载...");
         inst.addTransformer(new ClassFileTransformer() {
             @Override

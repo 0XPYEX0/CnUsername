@@ -25,7 +25,7 @@ public class ClassVisitorLoginListener extends ClassVisitor {
             Label label0 = new Label();
             mv.visitLabel(label0);
             mv.visitLineNumber(44, label0);
-            mv.visitLdcInsn("^[a-zA-Z0-9_\\u4e00-\\u9fa5]{3,16}$");
+            mv.visitLdcInsn("^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}$");
             mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/regex/Pattern", "compile", "(Ljava/lang/String;)Ljava/util/regex/Pattern;", false);
             mv.visitVarInsn(Opcodes.ALOAD, 0);
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/regex/Pattern", "matcher", "(Ljava/lang/CharSequence;)Ljava/util/regex/Matcher;", false);
