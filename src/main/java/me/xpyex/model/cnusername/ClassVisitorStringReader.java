@@ -79,7 +79,7 @@ public class ClassVisitorStringReader extends ClassVisitor {
             mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
             mv.visitInsn(Opcodes.ICONST_0);
             mv.visitLabel(label6);
-            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {Opcodes.INTEGER});
+            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[]{Opcodes.INTEGER});
             mv.visitInsn(Opcodes.IRETURN);
             Label label7 = new Label();
             mv.visitLabel(label7);

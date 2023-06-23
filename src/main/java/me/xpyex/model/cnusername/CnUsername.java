@@ -1,7 +1,5 @@
 package me.xpyex.model.cnusername;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
