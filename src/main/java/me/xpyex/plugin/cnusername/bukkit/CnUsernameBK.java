@@ -47,6 +47,7 @@ public final class CnUsernameBK extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        Logging.setLogger(getServer().getLogger());
         Logging.info("已加载");
         Logging.info("如遇Bug，或需提出建议: QQ1723275529");
         Logging.info("开始修改类 " + CLASS_NAME);
@@ -56,7 +57,7 @@ public final class CnUsernameBK extends JavaPlugin {
             ClassVisitor classVisitor = new ClassVisitorLoginListener(CLASS_NAME, classWriter);
             classReader.accept(classVisitor, 0);
             loadClass(CLASS_NAME, classWriter.toByteArray());
-            getLogger().info("修改完成");
+            Logging.info("修改完成并保存");
             // 加载类
         } catch (Exception e) {
             e.printStackTrace();
