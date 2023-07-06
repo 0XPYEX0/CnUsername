@@ -16,6 +16,23 @@ import sun.misc.Unsafe;
 
 public final class CnUsernameBK extends JavaPlugin {
     private static final String CLASS_NAME = "net.minecraft.server.network.LoginListener";
+    private final static Unsafe UNSAFE_INSTANCE;
+    private final static MethodHandle DEFINE_CLASS_METHOD;
+    static {
+        try {
+            Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+            unsafeField.setAccessible(true);
+            UNSAFE_INSTANCE = (Unsafe) unsafeField.get(null);
+
+            Field lookupField = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");
+            Object lookupBase = UNSAFE_INSTANCE.staticFieldBase(lookupField);
+            long lookupOffset = UNSAFE_INSTANCE.staticFieldOffset(lookupField);
+            MethodHandles.Lookup lookup = (MethodHandles.Lookup) UNSAFE_INSTANCE.getObject(lookupBase, lookupOffset);
+            DEFINE_CLASS_METHOD = lookup.findVirtual(ClassLoader.class, "defineClass", MethodType.methodType(Class.class, String.class, byte[].class, int.class, int.class));
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("初始化失败", e);
+        }
+    }
 
     /**
      * 运行中动态加载字节码
@@ -25,15 +42,7 @@ public final class CnUsernameBK extends JavaPlugin {
      */
     public static void loadClass(String className, byte[] bytes) {
         try {
-            Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
-            unsafeField.setAccessible(true);
-            Unsafe unsafe = (Unsafe) unsafeField.get(null);
-            Field lookupField = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");
-            Object lookupBase = unsafe.staticFieldBase(lookupField);
-            long lookupOffset = unsafe.staticFieldOffset(lookupField);
-            MethodHandles.Lookup lookup = (MethodHandles.Lookup) unsafe.getObject(lookupBase, lookupOffset);
-            MethodHandle defineClassMethod = lookup.findVirtual(ClassLoader.class, "defineClass", MethodType.methodType(Class.class, String.class, byte[].class, int.class, int.class));
-            defineClassMethod.invoke(Bukkit.class.getClassLoader(), className, bytes, 0, bytes.length);
+            DEFINE_CLASS_METHOD.invoke(Bukkit.class.getClassLoader(), className, bytes, 0, bytes.length);
         } catch (Throwable e) {
             throw new IllegalStateException("修改失败!", e);
         }
