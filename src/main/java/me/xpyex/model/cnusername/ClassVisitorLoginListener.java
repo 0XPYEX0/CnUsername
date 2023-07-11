@@ -15,10 +15,6 @@ public class ClassVisitorLoginListener extends ClassVisitor {
         this.className = className;
     }
 
-    public static boolean test(String a) {
-        return true;
-    }
-
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
