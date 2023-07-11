@@ -10,7 +10,8 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
 public class CnUsername {
-    public static final String CLASS_PATH_LOGIN = "net/minecraft/server/network/LoginListener";
+    public static final String CLASS_PATH_LOGIN_SPIGOT = "net/minecraft/server/network/LoginListener";
+    public static final String CLASS_PATH_LOGIN_MCP = "net/minecraft/server/network/ServerLoginPacketListenerImpl";
     public static final String CLASS_PATH_STRING = "com/mojang/brigadier/StringReader";
 
     public static void premain(String agentArgs, Instrumentation inst) {
@@ -21,7 +22,8 @@ public class CnUsername {
             @Override
             public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
                 switch (className) {
-                    case CLASS_PATH_LOGIN:
+                    case CLASS_PATH_LOGIN_SPIGOT:
+                    case CLASS_PATH_LOGIN_MCP:
                         Logging.info("开始修改类 " + className);
                         try {
                             ClassReader classReader = new ClassReader(classfileBuffer);

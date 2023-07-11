@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'me.xpyex.cnusername'
-version = '1.0.0'
+version = '1.0.1'
 
 repositories {
     mavenCentral()
@@ -61,5 +61,5 @@ processResources {
 }
 
 shadowJar {
-    relocate 'org.objectweb.asm', '%{project.group}.libs.asm'
+    relocate 'org.objectweb.asm', 'me.xpyex.model.CnUsername.libs.asm'
 }

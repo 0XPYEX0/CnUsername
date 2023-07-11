@@ -1,5 +1,6 @@
 package me.xpyex.plugin.cnusername.bukkit;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -15,7 +16,6 @@ import org.objectweb.asm.ClassWriter;
 import sun.misc.Unsafe;
 
 public final class CnUsernameBK extends JavaPlugin {
-    private static final String CLASS_NAME = "net.minecraft.server.network.LoginListener";
     private final static Unsafe UNSAFE_INSTANCE;
     private final static MethodHandle DEFINE_CLASS_METHOD;
     static {
@@ -44,7 +44,7 @@ public final class CnUsernameBK extends JavaPlugin {
         try {
             DEFINE_CLASS_METHOD.invoke(Bukkit.class.getClassLoader(), className, bytes, 0, bytes.length);
         } catch (Throwable e) {
-            throw new IllegalStateException("修改失败!", e);
+            throw new IllegalStateException("修改类 " + className + " 失败!", e);
         }
     }
 
@@ -59,13 +59,19 @@ public final class CnUsernameBK extends JavaPlugin {
         Logging.setLogger(getServer().getLogger());
         Logging.info("已加载");
         Logging.info("如遇Bug，或需提出建议: QQ1723275529");
-        Logging.info("开始修改类 " + CLASS_NAME);
         try {
-            ClassReader classReader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(CnUsername.CLASS_PATH_LOGIN + ".class"));
+            ClassReader classReader;
+            try {
+                classReader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(CnUsername.CLASS_PATH_LOGIN_SPIGOT + ".class"));
+            } catch (IOException ignored) {
+                classReader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(CnUsername.CLASS_PATH_LOGIN_MCP + ".class"));
+            }
+            String className = classReader.getClassName().replace("/", ".");
+            Logging.info("开始修改类 " + className);
             ClassWriter classWriter = new ClassWriter(classReader, 0);
-            ClassVisitor classVisitor = new ClassVisitorLoginListener(CLASS_NAME, classWriter);
+            ClassVisitor classVisitor = new ClassVisitorLoginListener(className, classWriter);
             classReader.accept(classVisitor, 0);
-            loadClass(CLASS_NAME, classWriter.toByteArray());
+            loadClass(className, classWriter.toByteArray());
             Logging.info("修改完成并保存");
             // 加载类
         } catch (Exception e) {
