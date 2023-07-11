@@ -18,7 +18,7 @@ public class ClassVisitorLoginListener extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
-        if ("(Ljava/lang/String;)Z".equals(descriptor) && (access & Opcodes.ACC_STATIC) > 0) {  //类内静态a(String)方法
+        if ("(Ljava/lang/String;)Z".equals(descriptor) && (access & Opcodes.ACC_STATIC) > 0) {  //类内静态isValidUsername(String)方法
             Logging.info("正在修改 " + className + " 类中的 " + name + "(String) 方法");
             mv.visitCode();
             Label label0 = new Label();
