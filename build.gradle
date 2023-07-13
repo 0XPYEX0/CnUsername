@@ -3,7 +3,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
-group = 'me.xpyex.cnusername'
+group = 'me.xpyex'
 version = '1.0.1'
 
 repositories {

@@ -7,11 +7,10 @@ import org.objectweb.asm.Opcodes;
 
 
 public class ClassVisitorLoginListener extends ClassVisitor {
-    private static final int ASM_VER = Opcodes.ASM9;
     private final String className;
 
     public ClassVisitorLoginListener(String className, ClassVisitor classVisitor) {
-        super(ASM_VER, classVisitor);
+        super(Opcodes.ASM9, classVisitor);
         this.className = className;
     }
 

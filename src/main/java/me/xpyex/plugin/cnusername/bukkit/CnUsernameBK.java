@@ -18,6 +18,7 @@ import sun.misc.Unsafe;
 public final class CnUsernameBK extends JavaPlugin {
     private final static Unsafe UNSAFE_INSTANCE;
     private final static MethodHandle DEFINE_CLASS_METHOD;
+
     static {
         try {
             Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
@@ -60,11 +61,16 @@ public final class CnUsernameBK extends JavaPlugin {
         Logging.info("已加载");
         Logging.info("如遇Bug，或需提出建议: QQ1723275529");
         try {
-            ClassReader classReader;
-            try {
-                classReader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(CnUsername.CLASS_PATH_LOGIN_SPIGOT + ".class"));
-            } catch (IOException ignored) {
-                classReader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(CnUsername.CLASS_PATH_LOGIN_MCP + ".class"));
+            ClassReader classReader = null;
+            for (String classPath : new String[]{CnUsername.CLASS_PATH_LOGIN_MCP, CnUsername.CLASS_PATH_LOGIN_SPIGOT, CnUsername.CLASS_PATH_LOGIN_YARN}) {
+                try {
+                    classReader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(classPath + ".class"));
+                    break;
+                } catch (IOException ignored) {
+                }
+            }
+            if (classReader == null) {
+                throw new IllegalStateException();
             }
             String className = classReader.getClassName().replace("/", ".");
             Logging.info("开始修改类 " + className);

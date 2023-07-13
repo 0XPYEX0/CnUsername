@@ -12,6 +12,7 @@ import org.objectweb.asm.ClassWriter;
 public class CnUsername {
     public static final String CLASS_PATH_LOGIN_SPIGOT = "net/minecraft/server/network/LoginListener";
     public static final String CLASS_PATH_LOGIN_MCP = "net/minecraft/server/network/ServerLoginPacketListenerImpl";
+    public static final String CLASS_PATH_LOGIN_YARN = "net/minecraft/server/network/ServerLoginNetworkHandler";
     public static final String CLASS_PATH_STRING = "com/mojang/brigadier/StringReader";
 
     public static void premain(String agentArgs, Instrumentation inst) {
@@ -20,13 +21,14 @@ public class CnUsername {
         Logging.info("等待Minecraft加载...");
         inst.addTransformer(new ClassFileTransformer() {
             @Override
-            public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
+            public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classFileBuffer) throws IllegalClassFormatException {
                 switch (className) {
                     case CLASS_PATH_LOGIN_SPIGOT:
                     case CLASS_PATH_LOGIN_MCP:
+                    case CLASS_PATH_LOGIN_YARN:
                         Logging.info("开始修改类 " + className);
                         try {
-                            ClassReader classReader = new ClassReader(classfileBuffer);
+                            ClassReader classReader = new ClassReader(classFileBuffer);
                             ClassWriter classWriter = new ClassWriter(classReader, 0);
                             ClassVisitor classVisitor = new ClassVisitorLoginListener(className, classWriter);
                             classReader.accept(classVisitor, 0);
@@ -41,7 +43,7 @@ public class CnUsername {
                     case CLASS_PATH_STRING:
                         Logging.info("开始修改类 " + className);
                         try {
-                            ClassReader classReader = new ClassReader(classfileBuffer);
+                            ClassReader classReader = new ClassReader(classFileBuffer);
                             ClassWriter classWriter = new ClassWriter(classReader, 0);
                             ClassVisitor classVisitor = new ClassVisitorStringReader(className, classWriter);
                             classReader.accept(classVisitor, 0);

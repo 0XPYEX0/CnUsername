@@ -33,7 +33,7 @@ public class Logging {
     }
 
     public static void setLogger(Logger logger) {
-        Logging.LOGGER = logger;
+        LOGGER = logger;
         //
     }
 }
