@@ -8,10 +8,12 @@ import org.objectweb.asm.Opcodes;
 
 public class ClassVisitorLoginListener extends ClassVisitor {
     private final String className;
+    private final String pattern;
 
-    public ClassVisitorLoginListener(String className, ClassVisitor classVisitor) {
+    public ClassVisitorLoginListener(String className, ClassVisitor classVisitor, String pattern) {
         super(Opcodes.ASM9, classVisitor);
         this.className = className;
+        this.pattern = pattern;
     }
 
     @Override
@@ -23,7 +25,7 @@ public class ClassVisitorLoginListener extends ClassVisitor {
             Label label0 = new Label();
             mv.visitLabel(label0);
             mv.visitLineNumber(44, label0);
-            mv.visitLdcInsn("^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}$");
+            mv.visitLdcInsn(pattern);
             mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/regex/Pattern", "compile", "(Ljava/lang/String;)Ljava/util/regex/Pattern;", false);
             mv.visitVarInsn(Opcodes.ALOAD, 0);
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/regex/Pattern", "matcher", "(Ljava/lang/CharSequence;)Ljava/util/regex/Matcher;", false);

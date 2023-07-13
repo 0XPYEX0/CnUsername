@@ -1,10 +1,15 @@
 package me.xpyex.plugin.cnusername.bukkit;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import me.xpyex.model.cnusername.ClassVisitorLoginListener;
 import me.xpyex.model.cnusername.CnUsername;
 import me.xpyex.model.cnusername.Logging;
@@ -75,7 +80,7 @@ public final class CnUsernameBK extends JavaPlugin {
             String className = classReader.getClassName().replace("/", ".");
             Logging.info("开始修改类 " + className);
             ClassWriter classWriter = new ClassWriter(classReader, 0);
-            ClassVisitor classVisitor = new ClassVisitorLoginListener(className, classWriter);
+            ClassVisitor classVisitor = new ClassVisitorLoginListener(className, classWriter, readPluginPattern());
             classReader.accept(classVisitor, 0);
             loadClass(className, classWriter.toByteArray());
             Logging.info("修改完成并保存");
@@ -83,6 +88,33 @@ public final class CnUsernameBK extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
             Logging.warning("修改失败");
+        }
+    }
+
+    public String readPluginPattern() {
+        Scanner input = null;
+        try {
+            File f = new File(getDataFolder(), "pattern.txt");
+            if (!f.exists()) {
+                f.createNewFile();
+                PrintWriter output = new PrintWriter(f);
+                output.write("^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}$");
+                output.close();
+            }
+            input = new Scanner(f);
+            String pattern = input.nextLine();
+            try {
+                Pattern.compile(pattern);
+                return pattern;
+            } catch (PatternSyntaxException ignored) {
+                throw new RuntimeException("你自定义的正则格式错误: " + pattern);
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return "^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}$";
+        }
+        finally {
+            if (input != null) input.close();
         }
     }
 }
