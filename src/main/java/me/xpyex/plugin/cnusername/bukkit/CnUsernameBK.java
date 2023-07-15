@@ -99,7 +99,7 @@ public final class CnUsernameBK extends JavaPlugin {
             return input.nextLine();
         } catch (Throwable e) {
             e.printStackTrace();
-            return "";
+            return null;
         } finally {
             if (input != null) input.close();
         }
