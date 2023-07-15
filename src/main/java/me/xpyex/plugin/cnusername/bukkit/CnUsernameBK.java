@@ -8,8 +8,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.util.Scanner;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import me.xpyex.model.cnusername.ClassVisitorLoginListener;
 import me.xpyex.model.cnusername.CnUsername;
 import me.xpyex.model.cnusername.Logging;
@@ -84,7 +82,6 @@ public final class CnUsernameBK extends JavaPlugin {
             classReader.accept(classVisitor, 0);
             loadClass(className, classWriter.toByteArray());
             Logging.info("修改完成并保存");
-            // 加载类
         } catch (Exception e) {
             e.printStackTrace();
             Logging.warning("修改失败");
@@ -97,23 +94,13 @@ public final class CnUsernameBK extends JavaPlugin {
             File f = new File(getDataFolder(), "pattern.txt");
             if (!f.exists()) {
                 f.createNewFile();
-                PrintWriter output = new PrintWriter(f);
-                output.write("^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}$");
-                output.close();
             }
             input = new Scanner(f);
-            String pattern = input.nextLine();
-            try {
-                Pattern.compile(pattern);
-                return pattern;
-            } catch (PatternSyntaxException ignored) {
-                throw new RuntimeException("你自定义的正则格式错误: " + pattern);
-            }
+            return input.nextLine();
         } catch (Throwable e) {
             e.printStackTrace();
-            return "^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}$";
-        }
-        finally {
+            return "";
+        } finally {
             if (input != null) input.close();
         }
     }
