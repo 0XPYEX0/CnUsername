@@ -2,3 +2,5 @@ name: CnUsername
 version: '${version}'
 main: me.xpyex.plugin.cnusername.bukkit.CnUsernameBK
 api-version: 1.13
+softdepend:
+  - XPLib
