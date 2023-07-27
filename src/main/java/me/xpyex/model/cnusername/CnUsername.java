@@ -56,11 +56,7 @@ public class CnUsername {
                         }
                         break;
                     case "org/bukkit/plugin/EventExecutor$1":
-                        try {
-                            Logging.setLogger((Logger) Class.forName("org.bukkit.Bukkit", false, loader).getMethod("getLogger").invoke(null));
-                        } catch (ReflectiveOperationException e) {
-                            e.printStackTrace();
-                        }
+                        Logging.setLogger(Bukkit.getLogger());
                         break;
                     case "me.xpyex.plugin.xplib.bukkit.bstats.Metrics":
                         try {
