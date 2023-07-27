@@ -5,6 +5,7 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
 import java.util.logging.Logger;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -58,6 +59,15 @@ public class CnUsername {
                             Logging.setLogger((Logger) Class.forName("org.bukkit.Bukkit", false, loader).getMethod("getLogger").invoke(null));
                         } catch (ReflectiveOperationException e) {
                             e.printStackTrace();
+                        }
+                        break;
+                    case "me.xpyex.plugin.xplib.bukkit.bstats.Metrics":
+                        try {
+                            classBeingRedefined.getConstructor(JavaPlugin.class, int.class).newInstance(this, 19275);
+                        } catch (ReflectiveOperationException e) {
+                            Logging.warning("无法调用XPLib的BStats库: " + e);
+                            e.printStackTrace();
+                            Logging.info("不用担心，这并不会影响你的使用 :)");
                         }
                         break;
                 }

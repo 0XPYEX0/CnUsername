@@ -2,7 +2,6 @@ package me.xpyex.plugin.cnusername.bukkit;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -63,6 +62,18 @@ public final class CnUsernameBK extends JavaPlugin {
         Logging.setLogger(getServer().getLogger());
         Logging.info("已加载");
         Logging.info("如遇Bug，或需提出建议: QQ1723275529");
+        getServer().getScheduler().runTaskAsynchronously(this, () -> {
+            if (getServer().getPluginManager().isPluginEnabled("XPLib")) {
+                try {
+                    Class<?> metricsClass = Class.forName("me.xpyex.plugin.xplib.bukkit.bstats.Metrics");
+                    metricsClass.getConstructor(JavaPlugin.class, int.class).newInstance(this, 19275);
+                } catch (ReflectiveOperationException e) {
+                    Logging.warning("无法调用XPLib的BStats库: " + e);
+                    e.printStackTrace();
+                    Logging.info("不用担心，这并不会影响你的使用 :)");
+                }
+            }
+        });
         try {
             ClassReader classReader = null;
             for (String classPath : new String[]{CnUsername.CLASS_PATH_LOGIN_MCP, CnUsername.CLASS_PATH_LOGIN_SPIGOT, CnUsername.CLASS_PATH_LOGIN_YARN}) {
