@@ -6,7 +6,8 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
-import java.util.Scanner;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import me.xpyex.model.cnusername.ClassVisitorLoginListener;
 import me.xpyex.model.cnusername.CnUsername;
 import me.xpyex.model.cnusername.Logging;
@@ -108,19 +109,15 @@ public final class CnUsernameBK extends JavaPlugin {
     }
 
     public String readPluginPattern() {
-        Scanner input = null;
         try {
             File f = new File(getDataFolder(), "pattern.txt");
             if (!f.exists()) {
                 f.createNewFile();
             }
-            input = new Scanner(f);
-            return input.nextLine();
+            return Files.readAllLines(f.toPath(), StandardCharsets.UTF_8).get(0);
         } catch (Throwable e) {
             e.printStackTrace();
             return null;
-        } finally {
-            if (input != null) input.close();
         }
     }
 }

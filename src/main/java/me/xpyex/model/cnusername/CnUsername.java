@@ -2,13 +2,12 @@ package me.xpyex.model.cnusername;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.ProtectionDomain;
-import java.util.Scanner;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.objectweb.asm.ClassReader;
@@ -34,15 +33,9 @@ public class CnUsername {
             }
             File debugFile = new File(MODULE_FOLDER, "debug.txt");
             if (!debugFile.exists()) {
-                debugFile.createNewFile();
-                PrintWriter out = new PrintWriter(debugFile, "UTF-8");
-                out.print("false");
-                out.flush();
-                out.close();
+                Files.write(debugFile.toPath(), "false".getBytes(StandardCharsets.UTF_8));
             }
-            Scanner in = new Scanner(debugFile, "UTF-8");
-            debugResult = "true".equalsIgnoreCase(in.next());
-            in.close();
+            debugResult = "true".equalsIgnoreCase(Files.readAllLines(debugFile.toPath(), StandardCharsets.UTF_8).get(0));
         } catch (Exception e) {
             debugResult = false;
             e.printStackTrace();
