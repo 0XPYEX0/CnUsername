@@ -1,10 +1,14 @@
 package me.xpyex.model.cnusername;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
+import java.nio.file.Files;
 import java.security.ProtectionDomain;
-import java.util.logging.Logger;
+import java.util.Scanner;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.objectweb.asm.ClassReader;
@@ -16,6 +20,38 @@ public class CnUsername {
     public static final String CLASS_PATH_LOGIN_MCP = "net/minecraft/server/network/ServerLoginPacketListenerImpl";
     public static final String CLASS_PATH_LOGIN_YARN = "net/minecraft/server/network/ServerLoginNetworkHandler";
     public static final String CLASS_PATH_STRING = "com/mojang/brigadier/StringReader";
+    public static final File MODULE_FOLDER = new File("CnUsername");
+    public static final boolean DEBUG;
+
+    static {
+        boolean debugResult;
+        try {
+            if (MODULE_FOLDER.exists() && MODULE_FOLDER.isFile()) {
+                throw new IllegalStateException("错误，服务端根目录下已存在CnUsername文件，且非文件夹");
+            }
+            if (!MODULE_FOLDER.exists()) {
+                MODULE_FOLDER.mkdirs();
+            }
+            File debugFile = new File(MODULE_FOLDER, "debug.txt");
+            if (!debugFile.exists()) {
+                debugFile.createNewFile();
+                PrintWriter out = new PrintWriter(debugFile, "UTF-8");
+                out.print("false");
+                out.flush();
+                out.close();
+            }
+            Scanner in = new Scanner(debugFile, "UTF-8");
+            debugResult = "true".equalsIgnoreCase(in.next());
+            in.close();
+        } catch (Exception e) {
+            debugResult = false;
+            e.printStackTrace();
+        }
+        DEBUG = debugResult;
+        if (DEBUG) {
+            Logging.info("当前Debug已启用，修改类时将会保存样本");
+        }
+    }
 
     public static void premain(final String agentArgs, final Instrumentation inst) {
         Logging.info("开始载入模块 CnUsername");
@@ -35,6 +71,14 @@ public class CnUsername {
                             ClassVisitor classVisitor = new ClassVisitorLoginListener(className, classWriter, agentArgs);
                             classReader.accept(classVisitor, 0);
                             Logging.info("修改完成并保存");
+                            if (DEBUG) {
+                                try {
+                                    Logging.info("Debug模式开启，保存修改后的样本以供调试");
+                                    Logging.info("已保存 " + className + " 类的文件样本至: " + saveClassFile(classWriter, className).getPath());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
                             return classWriter.toByteArray();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -49,6 +93,14 @@ public class CnUsername {
                             ClassVisitor classVisitor = new ClassVisitorStringReader(className, classWriter);
                             classReader.accept(classVisitor, 0);
                             Logging.info("修改完成并保存");
+                            if (DEBUG) {
+                                try {
+                                    Logging.info("Debug模式开启，保存修改后的样本以供调试");
+                                    Logging.info("已保存 " + className + " 类的文件样本至: " + saveClassFile(classWriter, className).getPath());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
                             return classWriter.toByteArray();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -60,7 +112,7 @@ public class CnUsername {
                         break;
                     case "me.xpyex.plugin.xplib.bukkit.bstats.Metrics":
                         try {
-                            classBeingRedefined.getConstructor(JavaPlugin.class, int.class).newInstance((JavaPlugin) Bukkit.getPluginManager().getPlugin("XPLib"), 19275);
+                            classBeingRedefined.getConstructor(JavaPlugin.class, int.class).newInstance(Bukkit.getPluginManager().getPlugin("XPLib"), 19275);
                         } catch (ReflectiveOperationException e) {
                             Logging.warning("无法调用XPLib的BStats库: " + e);
                             e.printStackTrace();
@@ -71,5 +123,11 @@ public class CnUsername {
                 return null;
             }
         });
+    }
+
+    public static File saveClassFile(ClassWriter writer, String className) throws IOException {
+        File file = new File(MODULE_FOLDER, className.replace("/", ".") + ".class");
+        Files.write(file.toPath(), writer.toByteArray());
+        return file;
     }
 }

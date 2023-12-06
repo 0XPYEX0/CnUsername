@@ -89,6 +89,14 @@ public final class CnUsernameBK extends JavaPlugin {
             String className = classReader.getClassName().replace("/", ".");
             Logging.info("开始修改类 " + className);
             ClassWriter classWriter = new ClassWriter(classReader, 0);
+            if (CnUsername.DEBUG) {
+                try {
+                    Logging.info("Debug模式开启，保存修改后的样本以供调试");
+                    Logging.info("已保存 " + className + " 类的文件样本至: " + CnUsername.saveClassFile(classWriter, className).getPath());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             ClassVisitor classVisitor = new ClassVisitorLoginListener(className, classWriter, readPluginPattern());
             classReader.accept(classVisitor, 0);
             loadClass(className, classWriter.toByteArray());
