@@ -22,7 +22,6 @@ public class ClassVisitorStringReader extends ClassVisitor {
             mv.visitCode();
             Label label0 = new Label();
             mv.visitLabel(label0);
-            mv.visitLineNumber(48, label0);
             mv.visitVarInsn(Opcodes.ILOAD, 0);
             mv.visitIntInsn(Opcodes.BIPUSH, 48);
             Label label1 = new Label();
@@ -66,10 +65,10 @@ public class ClassVisitorStringReader extends ClassVisitor {
             mv.visitVarInsn(Opcodes.ILOAD, 0);
             mv.visitIntInsn(Opcodes.SIPUSH, 19968);
             Label label5 = new Label();
-            mv.visitJumpInsn(Opcodes.IF_ICMPLE, label5);
+            mv.visitJumpInsn(Opcodes.IF_ICMPLT, label5);
             mv.visitVarInsn(Opcodes.ILOAD, 0);
             mv.visitLdcInsn(40869);
-            mv.visitJumpInsn(Opcodes.IF_ICMPGE, label5);
+            mv.visitJumpInsn(Opcodes.IF_ICMPGT, label5);
             mv.visitLabel(label2);
             mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
             mv.visitInsn(Opcodes.ICONST_1);
