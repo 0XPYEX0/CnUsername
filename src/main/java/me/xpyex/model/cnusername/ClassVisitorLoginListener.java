@@ -43,7 +43,6 @@ public class ClassVisitorLoginListener extends ClassVisitor {
             mv.visitCode();
             Label label0 = new Label();
             mv.visitLabel(label0);
-            mv.visitLineNumber(44, label0);
             mv.visitLdcInsn(pattern);
             mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/regex/Pattern", "compile", "(Ljava/lang/String;)Ljava/util/regex/Pattern;", false);
             mv.visitVarInsn(Opcodes.ALOAD, 0);
