@@ -19,19 +19,19 @@ import org.objectweb.asm.ClassWriter;
 import sun.misc.Unsafe;
 
 public final class CnUsernameBK extends JavaPlugin {
-    private final static Unsafe UNSAFE_INSTANCE;
     private final static MethodHandle DEFINE_CLASS_METHOD;
 
     static {
         try {
+            Unsafe unsafeInstance;
             Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
             unsafeField.setAccessible(true);
-            UNSAFE_INSTANCE = (Unsafe) unsafeField.get(null);
+            unsafeInstance = (Unsafe) unsafeField.get(null);
 
             Field lookupField = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");
-            Object lookupBase = UNSAFE_INSTANCE.staticFieldBase(lookupField);
-            long lookupOffset = UNSAFE_INSTANCE.staticFieldOffset(lookupField);
-            MethodHandles.Lookup lookup = (MethodHandles.Lookup) UNSAFE_INSTANCE.getObject(lookupBase, lookupOffset);
+            Object lookupBase = unsafeInstance.staticFieldBase(lookupField);
+            long lookupOffset = unsafeInstance.staticFieldOffset(lookupField);
+            MethodHandles.Lookup lookup = (MethodHandles.Lookup) unsafeInstance.getObject(lookupBase, lookupOffset);
             DEFINE_CLASS_METHOD = lookup.findVirtual(ClassLoader.class, "defineClass", MethodType.methodType(Class.class, String.class, byte[].class, int.class, int.class));
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("初始化失败", e);
