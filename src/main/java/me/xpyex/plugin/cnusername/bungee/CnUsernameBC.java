@@ -1,24 +1,23 @@
-package me.xpyex.plugin.cnusername.bukkit;
+package me.xpyex.plugin.cnusername.bungee;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import me.xpyex.model.cnusername.ClassVisitorLoginListener;
+import me.xpyex.model.cnusername.ClassVisitorAllowedCharacters;
 import me.xpyex.model.cnusername.CnUsername;
 import me.xpyex.model.cnusername.Logging;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.plugin.Plugin;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import sun.misc.Unsafe;
 
-public final class CnUsernameBK extends JavaPlugin {
+public class CnUsernameBC extends Plugin {
     private final static MethodHandle DEFINE_CLASS_METHOD;
 
     static {
@@ -46,51 +45,23 @@ public final class CnUsernameBK extends JavaPlugin {
      */
     public static void loadClass(String className, byte[] bytes) {
         try {
-            DEFINE_CLASS_METHOD.invoke(Bukkit.class.getClassLoader(), className, bytes, 0, bytes.length);
+            DEFINE_CLASS_METHOD.invoke(ProxyServer.class.getClassLoader(), className, bytes, 0, bytes.length);
         } catch (Throwable e) {
             throw new IllegalStateException("修改类 " + className + " 失败!", e);
         }
     }
 
     @Override
-    public void onDisable() {
-        Logging.info("已卸载");
-        //
-    }
-
-    @Override
     public void onEnable() {
-        Logging.setLogger(getServer().getLogger());
+        Logging.setLogger(getProxy().getLogger());
         Logging.info("已加载");
         Logging.info("如遇Bug，或需提出建议: QQ1723275529");
-        getServer().getScheduler().runTaskAsynchronously(this, () -> {
-            if (getServer().getPluginManager().isPluginEnabled("XPLib")) {
-                try {
-                    Class<?> metricsClass = Class.forName("me.xpyex.plugin.xplib.bukkit.bstats.Metrics");
-                    metricsClass.getConstructor(JavaPlugin.class, int.class).newInstance(this, 19275);
-                } catch (ReflectiveOperationException e) {
-                    Logging.warning("无法调用XPLib的BStats库: " + e);
-                    e.printStackTrace();
-                    Logging.info("不用担心，这并不会影响你的使用 :)");
-                }
-            }
-        });
         try {
-            ClassReader classReader = null;
-            for (String classPath : new String[]{CnUsername.CLASS_PATH_LOGIN_MCP, CnUsername.CLASS_PATH_LOGIN_SPIGOT, CnUsername.CLASS_PATH_LOGIN_YARN}) {
-                try {
-                    classReader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(classPath + ".class"));
-                    break;
-                } catch (IOException ignored) {
-                }
-            }
-            if (classReader == null) {
-                throw new IllegalStateException();
-            }
+            ClassReader classReader = new ClassReader(ProxyServer.class.getClassLoader().getResourceAsStream(CnUsername.CLASS_PATH_BUNGEE + ".class"));
             String className = classReader.getClassName().replace("/", ".");
             Logging.info("开始修改类 " + className);
             ClassWriter classWriter = new ClassWriter(classReader, 0);
-            ClassVisitor classVisitor = new ClassVisitorLoginListener(className, classWriter, readPluginPattern());
+            ClassVisitor classVisitor = new ClassVisitorAllowedCharacters(className, classWriter, readPluginPattern());
             classReader.accept(classVisitor, 0);
             loadClass(className, classWriter.toByteArray());
             Logging.info("修改完成并保存");
@@ -106,6 +77,12 @@ public final class CnUsernameBK extends JavaPlugin {
             e.printStackTrace();
             Logging.warning("修改失败");
         }
+    }
+
+    @Override
+    public void onDisable() {
+        Logging.info("已卸载");
+        //
     }
 
     public String readPluginPattern() {

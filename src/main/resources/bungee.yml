@@ -1,0 +1,4 @@
+name: CnUsername
+main: me.xpyex.plugin.cnusername.bungee.CnUsernameBC
+version: '1.0.4'
+author: XPYEX

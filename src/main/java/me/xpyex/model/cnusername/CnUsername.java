@@ -8,6 +8,7 @@ import java.lang.instrument.Instrumentation;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.ProtectionDomain;
+import net.md_5.bungee.api.ProxyServer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.objectweb.asm.ClassReader;
@@ -21,6 +22,7 @@ public class CnUsername {
     public static final String CLASS_PATH_STRING = "com/mojang/brigadier/StringReader";
     public static final File MODULE_FOLDER = new File("CnUsername");
     public static final boolean DEBUG;
+    public static final String CLASS_PATH_BUNGEE = "net/md_5/bungee/util/AllowedCharacters";
 
     static {
         boolean debugResult;
@@ -57,52 +59,47 @@ public class CnUsername {
                     case CLASS_PATH_LOGIN_MCP:
                     case CLASS_PATH_LOGIN_SPIGOT:
                     case CLASS_PATH_LOGIN_YARN:
-                        Logging.info("开始修改类 " + className);
-                        try {
-                            ClassReader classReader = new ClassReader(classFileBuffer);
-                            ClassWriter classWriter = new ClassWriter(classReader, 0);
-                            ClassVisitor classVisitor = new ClassVisitorLoginListener(className, classWriter, agentArgs);
-                            classReader.accept(classVisitor, 0);
-                            Logging.info("修改完成并保存");
-                            if (DEBUG) {
-                                try {
-                                    Logging.info("Debug模式开启，保存修改后的样本以供调试");
-                                    Logging.info("已保存 " + className + " 类的文件样本至: " + saveClassFile(classWriter, className).getPath());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            return classWriter.toByteArray();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Logging.warning("修改失败: " + e);
-                        }
-                        break;
                     case CLASS_PATH_STRING:
+                    case CLASS_PATH_BUNGEE:
                         Logging.info("开始修改类 " + className);
                         try {
-                            ClassReader classReader = new ClassReader(classFileBuffer);
-                            ClassWriter classWriter = new ClassWriter(classReader, 0);
-                            ClassVisitor classVisitor = new ClassVisitorStringReader(className, classWriter);
-                            classReader.accept(classVisitor, 0);
+                            ClassReader reader = new ClassReader(classFileBuffer);
+                            ClassWriter writer = new ClassWriter(reader, 0);
+                            ClassVisitor visitor;
+                            switch (className) {
+                                case CLASS_PATH_LOGIN_MCP:
+                                case CLASS_PATH_LOGIN_SPIGOT:
+                                case CLASS_PATH_LOGIN_YARN:
+                                    visitor = new ClassVisitorLoginListener(className, writer, agentArgs);
+                                    break;
+                                case CLASS_PATH_STRING:
+                                    visitor = new ClassVisitorStringReader(className, writer);
+                                    break;
+                                case CLASS_PATH_BUNGEE:
+                                    Logging.setLogger(ProxyServer.getInstance().getLogger());
+                                    visitor = new ClassVisitorAllowedCharacters(className, writer, agentArgs);
+                                    break;
+                                default:
+                                    Logging.info("修改失败: 未捕捉className");
+                                    return null;
+                            }
+                            reader.accept(visitor, 0);
                             Logging.info("修改完成并保存");
                             if (DEBUG) {
                                 try {
                                     Logging.info("Debug模式开启，保存修改后的样本以供调试");
-                                    Logging.info("已保存 " + className + " 类的文件样本至: " + saveClassFile(classWriter, className).getPath());
+                                    Logging.info("已保存 " + className + " 类的文件样本至: " + saveClassFile(writer, className).getPath());
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
-                            return classWriter.toByteArray();
+                            return writer.toByteArray();
                         } catch (Exception e) {
                             e.printStackTrace();
                             Logging.warning("修改失败: " + e);
                         }
-                        break;
                     case "org/bukkit/plugin/EventExecutor$1":
                         Logging.setLogger(Bukkit.getLogger());
-                        break;
                     case "me.xpyex.plugin.xplib.bukkit.bstats.Metrics":
                         try {
                             classBeingRedefined.getConstructor(JavaPlugin.class, int.class).newInstance(Bukkit.getPluginManager().getPlugin("XPLib"), 19275);
@@ -111,7 +108,6 @@ public class CnUsername {
                             e.printStackTrace();
                             Logging.info("不用担心，这并不会影响你的使用 :)");
                         }
-                        break;
                 }
                 return null;
             }

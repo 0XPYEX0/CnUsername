@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'me.xpyex'
-version = '1.0.3'
+version = '1.0.4'
 
 repositories {
     mavenCentral()
@@ -20,6 +20,7 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
     implementation 'org.ow2.asm:asm:9.3'
 }
 
