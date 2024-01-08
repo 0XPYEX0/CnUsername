@@ -1,15 +1,13 @@
 package me.xpyex.plugin.cnusername.bungee;
 
-import java.io.File;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import me.xpyex.model.cnusername.ClassVisitorAllowedCharacters;
-import me.xpyex.model.cnusername.CnUsername;
-import me.xpyex.model.cnusername.Logging;
+import me.xpyex.moduel.cnusername.bungee.ClassVisitorAllowedCharacters;
+import me.xpyex.moduel.cnusername.CnUsername;
+import me.xpyex.moduel.cnusername.CnUsernamePlugin;
+import me.xpyex.moduel.cnusername.Logging;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.objectweb.asm.ClassReader;
@@ -17,7 +15,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import sun.misc.Unsafe;
 
-public class CnUsernameBC extends Plugin {
+public class CnUsernameBC extends Plugin implements CnUsernamePlugin {
     private final static MethodHandle DEFINE_CLASS_METHOD;
 
     static {
@@ -83,18 +81,5 @@ public class CnUsernameBC extends Plugin {
     public void onDisable() {
         Logging.info("已卸载");
         //
-    }
-
-    public String readPluginPattern() {
-        try {
-            File f = new File(getDataFolder(), "pattern.txt");
-            if (!f.exists()) {
-                f.createNewFile();
-            }
-            return Files.readAllLines(f.toPath(), StandardCharsets.UTF_8).get(0);
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

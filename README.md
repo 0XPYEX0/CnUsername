@@ -1,4 +1,5 @@
 # CnUsername
+
 Allow player to use Chinese chars in username of Minecraft
 
 允许玩家使用中文名甚至特殊字符进入服务器

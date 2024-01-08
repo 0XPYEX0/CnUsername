@@ -1,4 +1,4 @@
-package me.xpyex.model.cnusername;
+package me.xpyex.moduel.cnusername;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

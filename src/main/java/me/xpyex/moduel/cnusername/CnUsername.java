@@ -1,4 +1,4 @@
-package me.xpyex.model.cnusername;
+package me.xpyex.moduel.cnusername;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,9 @@ import java.lang.instrument.Instrumentation;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.ProtectionDomain;
+import me.xpyex.moduel.cnusername.bungee.ClassVisitorAllowedCharacters;
+import me.xpyex.moduel.cnusername.minecraft.ClassVisitorLoginListener;
+import me.xpyex.moduel.cnusername.mojang.ClassVisitorStringReader;
 import net.md_5.bungee.api.ProxyServer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,15 +23,15 @@ public class CnUsername {
     public static final String CLASS_PATH_LOGIN_MCP = "net/minecraft/server/network/ServerLoginPacketListenerImpl";
     public static final String CLASS_PATH_LOGIN_YARN = "net/minecraft/server/network/ServerLoginNetworkHandler";
     public static final String CLASS_PATH_STRING = "com/mojang/brigadier/StringReader";
+    public static final String CLASS_PATH_BUNGEE = "net/md_5/bungee/util/AllowedCharacters";
     public static final File MODULE_FOLDER = new File("CnUsername");
     public static final boolean DEBUG;
-    public static final String CLASS_PATH_BUNGEE = "net/md_5/bungee/util/AllowedCharacters";
 
     static {
         boolean debugResult;
         try {
             if (MODULE_FOLDER.exists() && MODULE_FOLDER.isFile()) {
-                throw new IllegalStateException("错误，服务端根目录下已存在CnUsername文件，且非文件夹");
+                throw new IllegalStateException("错误: 服务端根目录下已存在CnUsername文件，且非文件夹");
             }
             if (!MODULE_FOLDER.exists()) {
                 MODULE_FOLDER.mkdirs();

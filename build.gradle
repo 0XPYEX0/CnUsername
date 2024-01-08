@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'me.xpyex'
-version = '1.0.4'
+version = '1.0.5'
 
 repositories {
     mavenCentral()
@@ -57,6 +57,9 @@ processResources {
     inputs.properties props
     filteringCharset 'UTF-8'
     filesMatching('plugin.yml') {
+        expand props
+    }
+    filesMatching('bungee.yml') {
         expand props
     }
 }

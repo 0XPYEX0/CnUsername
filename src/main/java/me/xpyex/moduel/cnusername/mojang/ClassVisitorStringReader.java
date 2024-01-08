@@ -1,5 +1,6 @@
-package me.xpyex.model.cnusername;
+package me.xpyex.moduel.cnusername.mojang;
 
+import me.xpyex.moduel.cnusername.Logging;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -9,7 +10,7 @@ public class ClassVisitorStringReader extends ClassVisitor {
     public static final String METHOD_NAME = "isAllowedInUnquotedString";
     private final String className;
 
-    protected ClassVisitorStringReader(String className, ClassVisitor classVisitor) {
+    public ClassVisitorStringReader(String className, ClassVisitor classVisitor) {
         super(Opcodes.ASM9, classVisitor);
         this.className = className;
     }

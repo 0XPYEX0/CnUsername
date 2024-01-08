@@ -1,16 +1,14 @@
 package me.xpyex.plugin.cnusername.bukkit;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import me.xpyex.model.cnusername.ClassVisitorLoginListener;
-import me.xpyex.model.cnusername.CnUsername;
-import me.xpyex.model.cnusername.Logging;
+import me.xpyex.moduel.cnusername.minecraft.ClassVisitorLoginListener;
+import me.xpyex.moduel.cnusername.CnUsername;
+import me.xpyex.moduel.cnusername.CnUsernamePlugin;
+import me.xpyex.moduel.cnusername.Logging;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.objectweb.asm.ClassReader;
@@ -18,7 +16,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import sun.misc.Unsafe;
 
-public final class CnUsernameBK extends JavaPlugin {
+public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
     private final static MethodHandle DEFINE_CLASS_METHOD;
 
     static {
@@ -26,7 +24,7 @@ public final class CnUsernameBK extends JavaPlugin {
             Unsafe unsafeInstance;
             Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
             unsafeField.setAccessible(true);
-            unsafeInstance = (Unsafe) unsafeField.get(null);
+            unsafeInstance = (Unsafe) unsafeField.get(null);  //Unsafe.theUnsafe静态变量
 
             Field lookupField = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");
             Object lookupBase = unsafeInstance.staticFieldBase(lookupField);
@@ -105,19 +103,6 @@ public final class CnUsernameBK extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
             Logging.warning("修改失败");
-        }
-    }
-
-    public String readPluginPattern() {
-        try {
-            File f = new File(getDataFolder(), "pattern.txt");
-            if (!f.exists()) {
-                f.createNewFile();
-            }
-            return Files.readAllLines(f.toPath(), StandardCharsets.UTF_8).get(0);
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return null;
         }
     }
 }
