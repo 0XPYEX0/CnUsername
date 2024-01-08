@@ -11,7 +11,7 @@ public interface CnUsernamePlugin {
             File f = new File(getDataFolder(), "pattern.txt");
             File folder = f.getParentFile();
             if (folder.exists() && folder.isFile()) {
-                Logging.info("错误: 插件目录下已存在CnUsername文件，且非文件夹");
+                Logging.warning("错误: 插件目录下已存在CnUsername文件，且非文件夹");
                 return null;
             }
             if (!f.exists()) {
