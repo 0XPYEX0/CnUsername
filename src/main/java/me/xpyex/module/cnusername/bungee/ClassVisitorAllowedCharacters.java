@@ -2,8 +2,8 @@ package me.xpyex.module.cnusername.bungee;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
 import me.xpyex.module.cnusername.Logging;
+import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
