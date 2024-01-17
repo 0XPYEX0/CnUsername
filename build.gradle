@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'me.xpyex'
-version = '1.0.5'
+version = '1.0.6'
 
 repositories {
     mavenCentral()
@@ -47,7 +47,7 @@ tasks.withType(JavaCompile) {
 jar {
     manifest {
         attributes(
-                "Premain-Class": 'me.xpyex.model.cnusername.CnUsername'
+                "Premain-Class": 'me.xpyex.module.cnusername.CnUsername'
         )
     }
 }

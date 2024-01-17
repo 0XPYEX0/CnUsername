@@ -1,4 +1,4 @@
-package me.xpyex.moduel.cnusername;
+package me.xpyex.module.cnusername;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,9 +8,9 @@ import java.lang.instrument.Instrumentation;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.ProtectionDomain;
-import me.xpyex.moduel.cnusername.bungee.ClassVisitorAllowedCharacters;
-import me.xpyex.moduel.cnusername.minecraft.ClassVisitorLoginListener;
-import me.xpyex.moduel.cnusername.mojang.ClassVisitorStringReader;
+import me.xpyex.module.cnusername.bungee.ClassVisitorAllowedCharacters;
+import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
+import me.xpyex.module.cnusername.mojang.ClassVisitorStringReader;
 import net.md_5.bungee.api.ProxyServer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;

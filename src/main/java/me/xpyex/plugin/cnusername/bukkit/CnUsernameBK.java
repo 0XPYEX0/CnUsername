@@ -5,10 +5,10 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
-import me.xpyex.moduel.cnusername.minecraft.ClassVisitorLoginListener;
-import me.xpyex.moduel.cnusername.CnUsername;
-import me.xpyex.moduel.cnusername.CnUsernamePlugin;
-import me.xpyex.moduel.cnusername.Logging;
+import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
+import me.xpyex.module.cnusername.CnUsername;
+import me.xpyex.module.cnusername.CnUsernamePlugin;
+import me.xpyex.module.cnusername.Logging;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.objectweb.asm.ClassReader;
@@ -26,7 +26,7 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
             unsafeField.setAccessible(true);
             unsafeInstance = (Unsafe) unsafeField.get(null);  //Unsafe.theUnsafe静态变量
 
-            Field lookupField = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");
+            Field lookupField = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");  //Lookup.IMPL_LOOKUP常量
             Object lookupBase = unsafeInstance.staticFieldBase(lookupField);
             long lookupOffset = unsafeInstance.staticFieldOffset(lookupField);
             MethodHandles.Lookup lookup = (MethodHandles.Lookup) unsafeInstance.getObject(lookupBase, lookupOffset);

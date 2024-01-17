@@ -1,6 +1,6 @@
-package me.xpyex.moduel.cnusername.mojang;
+package me.xpyex.module.cnusername.mojang;
 
-import me.xpyex.moduel.cnusername.Logging;
+import me.xpyex.module.cnusername.Logging;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -19,7 +19,7 @@ public class ClassVisitorStringReader extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
         if (METHOD_NAME.equals(name) && "(C)Z".equals(descriptor) && (access & Opcodes.ACC_STATIC) > 0) {  //静态 isAllowedInUnquotedString(char)
-            Logging.info("正在修改 " + className + " 类中的 " + METHOD_NAME + "方法");
+            Logging.info("正在修改 " + className + " 类中的 " + METHOD_NAME + "() 方法");
             mv.visitCode();
             Label label0 = new Label();
             mv.visitLabel(label0);

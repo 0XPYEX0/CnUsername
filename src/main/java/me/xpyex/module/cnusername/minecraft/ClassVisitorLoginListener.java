@@ -1,31 +1,31 @@
-package me.xpyex.moduel.cnusername.bungee;
+package me.xpyex.module.cnusername.minecraft;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import me.xpyex.moduel.cnusername.minecraft.ClassVisitorLoginListener;
-import me.xpyex.moduel.cnusername.Logging;
+import me.xpyex.module.cnusername.Logging;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-public class ClassVisitorAllowedCharacters extends ClassVisitor {
+public class ClassVisitorLoginListener extends ClassVisitor {
+    public static final String DEFAULT_PATTERN = "^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}$";
     private final String className;
     private final String pattern;
 
-    public ClassVisitorAllowedCharacters(String className, ClassVisitor classVisitor, String pattern) {
+    public ClassVisitorLoginListener(String className, ClassVisitor classVisitor, String pattern) {
         super(Opcodes.ASM9, classVisitor);
         this.className = className;
         String s;
         if (pattern == null || pattern.isEmpty()) {
-            s = ClassVisitorLoginListener.DEFAULT_PATTERN;
+            s = DEFAULT_PATTERN;
             Logging.info("当前玩家名规则将使用本组件的默认正则规则");
         } else {
             try {
                 Pattern.compile(pattern);
                 s = pattern;
             } catch (PatternSyntaxException e) {
-                s = ClassVisitorLoginListener.DEFAULT_PATTERN;
+                s = DEFAULT_PATTERN;
                 e.printStackTrace();
                 Logging.warning("你自定义的正则格式无效: " + pattern);
                 Logging.info("当前玩家名规则将使用本组件的默认正则规则");
@@ -39,8 +39,8 @@ public class ClassVisitorAllowedCharacters extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
-        if ("isValidName".equals(name) && (access & Opcodes.ACC_STATIC) > 0) {  //静态isValidName方法，无视参数
-            Logging.info("正在修改 " + className + " 类中的 " + name + "(String, boolean) 方法");
+        if ("(Ljava/lang/String;)Z".equals(descriptor) && (access & Opcodes.ACC_STATIC) > 0) {  //类内静态isValidUsername(String)方法
+            Logging.info("正在修改 " + className + " 类中的 " + name + "(String) 方法");
             mv.visitCode();
             Label label0 = new Label();
             mv.visitLabel(label0);
@@ -53,8 +53,7 @@ public class ClassVisitorAllowedCharacters extends ClassVisitor {
             Label label1 = new Label();
             mv.visitLabel(label1);
             mv.visitLocalVariable("name", "Ljava/lang/String;", null, label0, label1, 0);
-            mv.visitLocalVariable("onlineMode", "Z", null, label0, label1, 1);
-            mv.visitMaxs(2, 2);
+            mv.visitMaxs(2, 1);
             mv.visitEnd();
             return null;
         }
