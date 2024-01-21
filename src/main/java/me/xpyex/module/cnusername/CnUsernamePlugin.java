@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 public interface CnUsernamePlugin {
-    public default String readPluginPattern() {
+    default String readPluginPattern() {
         try {
             File f = new File(getDataFolder(), "pattern.txt");
             File folder = f.getParentFile();
@@ -26,5 +26,5 @@ public interface CnUsernamePlugin {
         }
     }
 
-    public File getDataFolder();
+    File getDataFolder();
 }

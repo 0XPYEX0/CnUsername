@@ -7,7 +7,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class ClassVisitorStringReader extends ClassVisitor {
-    public static final String METHOD_NAME = "isAllowedInUnquotedString";
+    private static final String METHOD_NAME = "isAllowedInUnquotedString";
     private final String className;
 
     public ClassVisitorStringReader(String className, ClassVisitor classVisitor) {
