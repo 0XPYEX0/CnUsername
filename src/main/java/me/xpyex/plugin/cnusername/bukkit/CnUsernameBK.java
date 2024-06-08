@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import me.xpyex.module.cnusername.CnUsername;
 import me.xpyex.module.cnusername.CnUsernamePlugin;
 import me.xpyex.module.cnusername.Logging;
+import me.xpyex.module.cnusername.UpdateChecker;
 import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -61,6 +62,7 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
         Logging.setLogger(getServer().getLogger());
         Logging.info("已加载");
         Logging.info("如遇Bug，或需提出建议: QQ1723275529");
+        getServer().getScheduler().runTaskAsynchronously(this, UpdateChecker::check);
         getServer().getScheduler().runTaskAsynchronously(this, () -> {
             if (getServer().getPluginManager().isPluginEnabled("XPLib")) {
                 try {

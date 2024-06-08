@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import me.xpyex.module.cnusername.CnUsername;
 import me.xpyex.module.cnusername.CnUsernamePlugin;
 import me.xpyex.module.cnusername.Logging;
+import me.xpyex.module.cnusername.UpdateChecker;
 import me.xpyex.module.cnusername.bungee.ClassVisitorAllowedCharacters;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -54,6 +55,7 @@ public class CnUsernameBC extends Plugin implements CnUsernamePlugin {
         Logging.setLogger(getProxy().getLogger());
         Logging.info("已加载");
         Logging.info("如遇Bug，或需提出建议: QQ1723275529");
+        getProxy().getScheduler().runAsync(this, UpdateChecker::check);
         try {
             ClassReader classReader = new ClassReader(ProxyServer.class.getClassLoader().getResourceAsStream(CnUsername.CLASS_PATH_BUNGEE + ".class"));
             String className = classReader.getClassName().replace("/", ".");

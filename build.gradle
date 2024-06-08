@@ -23,6 +23,7 @@ repositories {
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
+    compileOnly 'com.google.code.gson:gson:2.8.9'
     implementation 'org.ow2.asm:asm:9.7'
 }
 
@@ -62,6 +63,9 @@ processResources {
         expand props
     }
     filesMatching('bungee.yml') {
+        expand props
+    }
+    filesMatching('version') {
         expand props
     }
 }
