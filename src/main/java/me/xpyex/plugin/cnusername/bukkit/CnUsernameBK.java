@@ -83,7 +83,7 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
                 }
             }
             if (classReader == null) {
-                throw new IllegalStateException();
+                throw new IllegalStateException("无法读取对应Class: Class可能不存在，或Class先于插件加载.");
             }
             String className = classReader.getClassName().replace("/", ".");
             Logging.info("开始修改类 " + className);

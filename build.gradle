@@ -5,6 +5,8 @@ plugins {
 
 group = 'me.xpyex'
 version = '1.0.7'
+def pluginPackage = 'me.xpyex.plugin.CnUsername'.toLowerCase()
+def modulePackage = 'me.xpyex.module.CnUsername'.toLowerCase()
 
 repositories {
     mavenCentral()
@@ -21,10 +23,10 @@ repositories {
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
-    implementation 'org.ow2.asm:asm:9.3'
+    implementation 'org.ow2.asm:asm:9.7'
 }
 
-def targetJavaVersion = 8
+def targetJavaVersion = 11
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
@@ -47,13 +49,13 @@ tasks.withType(JavaCompile) {
 jar {
     manifest {
         attributes(
-                "Premain-Class": 'me.xpyex.module.cnusername.CnUsername'
+                "Premain-Class": modulePackage + '.CnUsername'
         )
     }
 }
 
 processResources {
-    def props = [version: version]
+    def props = [version: version, bc: (pluginPackage + '.bungee.CnUsernameBC'), bk: (pluginPackage + '.bukkit.CnUsernameBK')]
     inputs.properties props
     filteringCharset 'UTF-8'
     filesMatching('plugin.yml') {
@@ -65,5 +67,5 @@ processResources {
 }
 
 shadowJar {
-    relocate 'org.objectweb.asm', 'me.xpyex.model.cnusername.libs.asm'
+    relocate 'org.objectweb.asm', 'me.xpyex.module.cnusername.libs.asm'
 }

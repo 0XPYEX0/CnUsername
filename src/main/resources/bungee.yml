@@ -1,4 +1,4 @@
 name: CnUsername
-main: me.xpyex.plugin.cnusername.bungee.CnUsernameBC
+main: ${bc}
 version: '${version}'
 author: XPYEX
