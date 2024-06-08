@@ -74,6 +74,7 @@ public class CnUsername {
                                 case CLASS_PATH_LOGIN_SPIGOT:
                                 case CLASS_PATH_LOGIN_YARN:
                                     visitor = new ClassVisitorLoginListener(className, writer, agentArgs);
+                                    new Thread(UpdateChecker::check).start();  //此时Gson必然已加载，顺便检查更新
                                     break;
                                 case CLASS_PATH_STRING:
                                     visitor = new ClassVisitorStringReader(className, writer);
@@ -104,7 +105,6 @@ public class CnUsername {
                         }
                     case "org/bukkit/plugin/EventExecutor$1":
                         Logging.setLogger(Bukkit.getLogger());
-                        new Thread(UpdateChecker::check).start();  //此时Gson必然已加载，顺便检查更新
                     case "me.xpyex.plugin.xplib.bukkit.bstats.Metrics":
                         try {
                             classBeingRedefined.getConstructor(JavaPlugin.class, int.class).newInstance(Bukkit.getPluginManager().getPlugin("XPLib"), 19275);
