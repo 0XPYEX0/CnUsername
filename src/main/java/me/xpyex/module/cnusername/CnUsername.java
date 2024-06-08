@@ -81,6 +81,7 @@ public class CnUsername {
                                 case CLASS_PATH_BUNGEE:
                                     Logging.setLogger(ProxyServer.getInstance().getLogger());
                                     visitor = new ClassVisitorAllowedCharacters(className, writer, agentArgs);
+                                    new Thread(UpdateChecker::check).start();  //此时Gson必然已加载，顺便检查更新
                                     break;
                                 default:
                                     Logging.info("修改失败: 未捕捉className");
