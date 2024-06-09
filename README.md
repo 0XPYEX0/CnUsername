@@ -8,7 +8,7 @@ Allow player to use Chinese chars in username of Minecraft
 
 # 插件方式加载教程
 1. 在[Releases](https://github.com/0XPYEX0/CnUsername/releases)中下载<br>
-2. 放入`plugins`文件夹 [仅Bukkit/BungeeCord，及其所有分支(如Spigot|Paper|WaterFall等)]<br>
+2. 放入`plugins`文件夹 [仅Bukkit|BungeeCord，及其所有分支(如Spigot|Paper|WaterFall等)]<br>
 3. 插件方式加载有诸多限制，如:
 <br>    3.1 原版实体选择器不支持特殊名字玩家. 例如无法使用`/tp`命令，请使用`/tp "<username>"`  其中`<username>`替换为玩家名字
 <br>    3.2 在1.20.5+，`Paper`及其分支服务端，玩家名字长度不能长于16，否则无法进入服务器. JavaAgent加载方式不受此限制<br>
@@ -18,7 +18,7 @@ Allow player to use Chinese chars in username of Minecraft
 1. 在[Releases](https://github.com/0XPYEX0/CnUsername/releases)中下载
 2. 放入`服务端根目录`
 3. 修改你的启动命令，在`java`后写入`-javaagent:CnUsername-version-all.jar`. 例如:
-    3.1 `java -javaagent:CnUsername-1.0.7-all.jar -jar server.jar` **注意，此处仅为举例说明，请根据实际情况编写**
+<br>    3.1 `java -javaagent:CnUsername-1.0.7-all.jar -jar server.jar` **注意，此处仅为举例说明，请根据实际情况编写**
 4. JavaAgent加载模式可以解锁所有功能，包括但不限于:
 <br>    4.1 玩家名字长度无限制
 <br>    4.2 能够正常使用原版实体选择器选择特殊名字玩家
