@@ -7,6 +7,7 @@ Allow player to use Chinese chars in username of Minecraft
 介绍贴: https://www.mcbbs.net/thread-1449800-1-1.html (已似)
 
 # 插件方式加载教程
+### 推荐所有有条件的服主使用JavaAgent方式加载，以解锁所有功能
 1. 在[Releases](https://github.com/0XPYEX0/CnUsername/releases)中下载<br>
 2. 放入`plugins`文件夹 [仅Bukkit|BungeeCord，及其所有分支(如Spigot|Paper|WaterFall等)]<br>
 3. 插件方式加载有诸多限制，如:
@@ -15,6 +16,7 @@ Allow player to use Chinese chars in username of Minecraft
 4. 如需自定义正则匹配，请修改`plugins/CnUsername/pattern.txt`
 
 # JavaAgent加载教程
+### 推荐所有有条件的服主使用JavaAgent方式加载，以解锁所有功能
 1. 在[Releases](https://github.com/0XPYEX0/CnUsername/releases)中下载
 2. 放入`服务端根目录`
 3. 修改你的启动命令，在`java`后写入`-javaagent:CnUsername-version-all.jar`. 例如:
