@@ -18,7 +18,8 @@ Allow player to use Chinese chars in username of Minecraft
 1. 在[Releases](https://github.com/0XPYEX0/CnUsername/releases)中下载
 2. 放入`服务端根目录`
 3. 修改你的启动命令，在`java`后写入`-javaagent:CnUsername-version-all.jar`. 例如:
-<br>    3.1 `java -javaagent:CnUsername-1.0.7-all.jar -jar server.jar` **注意，此处仅为举例说明，请根据实际情况编写**
+<br>    `java -javaagent:CnUsername-1.0.7-all.jar -jar server.jar`
+<br>    **注意，此处仅为举例说明，请根据实际情况编写**
 4. JavaAgent加载模式可以解锁所有功能，包括但不限于:
 <br>    4.1 玩家名字长度无限制
 <br>    4.2 能够正常使用原版实体选择器选择特殊名字玩家
