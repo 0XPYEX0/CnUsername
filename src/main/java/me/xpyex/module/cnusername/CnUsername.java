@@ -73,7 +73,7 @@ public class CnUsername {
                             ClassVisitor visitor;
                             switch (className) {
                                 case ClassVisitorAllowedCharacters.CLASS_PATH:
-                                    Logging.setLogger(ProxyServer.getInstance().getLogger());
+                                    Logging.setLogger(ProxyServer.getInstance().getLogger());  //BungeeCord Logger
                                     visitor = new ClassVisitorAllowedCharacters(className, writer, agentArgs);
                                     UpdateChecker.check();  //此时Gson必然已加载，顺便检查更新
                                     break;
