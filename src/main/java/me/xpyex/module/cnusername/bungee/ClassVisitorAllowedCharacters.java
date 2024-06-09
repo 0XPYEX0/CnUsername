@@ -2,14 +2,15 @@ package me.xpyex.module.cnusername.bungee;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import me.xpyex.module.cnusername.CnUsername;
 import me.xpyex.module.cnusername.Logging;
-import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class ClassVisitorAllowedCharacters extends ClassVisitor {
+    public static final String CLASS_PATH = "net/md_5/bungee/util/AllowedCharacters";
     private final String className;
     private final String pattern;
 
@@ -18,14 +19,14 @@ public class ClassVisitorAllowedCharacters extends ClassVisitor {
         this.className = className;
         String s;
         if (pattern == null || pattern.isEmpty()) {
-            s = ClassVisitorLoginListener.DEFAULT_PATTERN;
+            s = CnUsername.DEFAULT_PATTERN;
             Logging.info("当前玩家名规则将使用本组件的默认正则规则");
         } else {
             try {
                 Pattern.compile(pattern);
                 s = pattern;
             } catch (PatternSyntaxException e) {
-                s = ClassVisitorLoginListener.DEFAULT_PATTERN;
+                s = CnUsername.DEFAULT_PATTERN;
                 e.printStackTrace();
                 Logging.warning("你自定义的正则格式无效: " + pattern);
                 Logging.info("当前玩家名规则将使用本组件的默认正则规则");

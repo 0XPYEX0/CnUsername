@@ -57,7 +57,7 @@ public class CnUsernameBC extends Plugin implements CnUsernamePlugin {
         Logging.info("如遇Bug，或需提出建议: QQ1723275529");
         getProxy().getScheduler().runAsync(this, UpdateChecker::check);
         try {
-            ClassReader classReader = new ClassReader(ProxyServer.class.getClassLoader().getResourceAsStream(CnUsername.CLASS_PATH_BUNGEE + ".class"));
+            ClassReader classReader = new ClassReader(ProxyServer.class.getClassLoader().getResourceAsStream(ClassVisitorAllowedCharacters.CLASS_PATH + ".class"));
             String className = classReader.getClassName().replace("/", ".");
             Logging.info("开始修改类 " + className);
             ClassWriter classWriter = new ClassWriter(classReader, 0);

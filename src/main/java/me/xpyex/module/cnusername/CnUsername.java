@@ -11,6 +11,8 @@ import java.security.ProtectionDomain;
 import me.xpyex.module.cnusername.bungee.ClassVisitorAllowedCharacters;
 import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
 import me.xpyex.module.cnusername.mojang.ClassVisitorStringReader;
+import me.xpyex.module.cnusername.mojang.ClassVisitorStringUtil;
+import me.xpyex.module.cnusername.paper.ClassVisitorCraftPlayerProfile;
 import net.md_5.bungee.api.ProxyServer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,11 +21,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
 public class CnUsername {
-    public static final String CLASS_PATH_LOGIN_SPIGOT = "net/minecraft/server/network/LoginListener";
-    public static final String CLASS_PATH_LOGIN_MCP = "net/minecraft/server/network/ServerLoginPacketListenerImpl";
-    public static final String CLASS_PATH_LOGIN_YARN = "net/minecraft/server/network/ServerLoginNetworkHandler";
-    public static final String CLASS_PATH_STRING = "com/mojang/brigadier/StringReader";
-    public static final String CLASS_PATH_BUNGEE = "net/md_5/bungee/util/AllowedCharacters";
+    public static final String DEFAULT_PATTERN = "^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}$";
     public static final File MODULE_FOLDER = new File("CnUsername");
     public static final boolean DEBUG;
 
@@ -54,35 +52,45 @@ public class CnUsername {
     public static void premain(final String agentArgs, final Instrumentation inst) {
         Logging.info("开始载入模块 CnUsername");
         Logging.info("如遇Bug，或需提出建议: QQ1723275529");
+        Logging.info("下载地址: https://github.com/0XPYEX0/CnUsername/releases");
+        Logging.info("有空可以去看看有没有更新噢~");
         Logging.info("等待Minecraft加载...");
         inst.addTransformer(new ClassFileTransformer() {
             @Override
             public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classFileBuffer) throws IllegalClassFormatException {
                 switch (className) {
-                    case CLASS_PATH_LOGIN_MCP:
-                    case CLASS_PATH_LOGIN_SPIGOT:
-                    case CLASS_PATH_LOGIN_YARN:
-                    case CLASS_PATH_STRING:
-                    case CLASS_PATH_BUNGEE:
+                    case ClassVisitorAllowedCharacters.CLASS_PATH:
+                    case ClassVisitorCraftPlayerProfile.CLASS_PATH:
+                    case ClassVisitorLoginListener.CLASS_PATH_MOJANG:
+                    case ClassVisitorLoginListener.CLASS_PATH_SPIGOT:
+                    case ClassVisitorLoginListener.CLASS_PATH_YARN:
+                    case ClassVisitorStringReader.CLASS_PATH:
+                    case ClassVisitorStringUtil.CLASS_PATH:
                         Logging.info("开始修改类 " + className);
                         try {
                             ClassReader reader = new ClassReader(classFileBuffer);
                             ClassWriter writer = new ClassWriter(reader, 0);
                             ClassVisitor visitor;
                             switch (className) {
-                                case CLASS_PATH_LOGIN_MCP:
-                                case CLASS_PATH_LOGIN_SPIGOT:
-                                case CLASS_PATH_LOGIN_YARN:
-                                    visitor = new ClassVisitorLoginListener(className, writer, agentArgs);
-                                    new Thread(UpdateChecker::check).start();  //此时Gson必然已加载，顺便检查更新
-                                    break;
-                                case CLASS_PATH_STRING:
-                                    visitor = new ClassVisitorStringReader(className, writer);
-                                    break;
-                                case CLASS_PATH_BUNGEE:
+                                case ClassVisitorAllowedCharacters.CLASS_PATH:
                                     Logging.setLogger(ProxyServer.getInstance().getLogger());
                                     visitor = new ClassVisitorAllowedCharacters(className, writer, agentArgs);
-                                    new Thread(UpdateChecker::check).start();  //此时Gson必然已加载，顺便检查更新
+                                    UpdateChecker.check();  //此时Gson必然已加载，顺便检查更新
+                                    break;
+                                case ClassVisitorCraftPlayerProfile.CLASS_PATH:
+                                    visitor = new ClassVisitorCraftPlayerProfile(className, writer, agentArgs);
+                                    break;
+                                case ClassVisitorLoginListener.CLASS_PATH_MOJANG:
+                                case ClassVisitorLoginListener.CLASS_PATH_SPIGOT:
+                                case ClassVisitorLoginListener.CLASS_PATH_YARN:
+                                    visitor = new ClassVisitorLoginListener(className, writer, agentArgs);
+                                    UpdateChecker.check();  //此时Gson必然已加载，顺便检查更新
+                                    break;
+                                case ClassVisitorStringReader.CLASS_PATH:
+                                    visitor = new ClassVisitorStringReader(className, writer);
+                                    break;
+                                case ClassVisitorStringUtil.CLASS_PATH:
+                                    visitor = new ClassVisitorStringUtil(className, writer, agentArgs);
                                     break;
                                 default:
                                     Logging.info("修改失败: 未捕捉className");
@@ -104,6 +112,7 @@ public class CnUsername {
                             Logging.warning("修改失败: " + e);
                         }
                     case "org/bukkit/plugin/EventExecutor$1":
+                    case "org/bukkit/Bukkit":
                         Logging.setLogger(Bukkit.getLogger());
                     case "me.xpyex.plugin.xplib.bukkit.bstats.Metrics":
                         try {

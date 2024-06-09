@@ -7,6 +7,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class ClassVisitorStringReader extends ClassVisitor {
+    public static final String CLASS_PATH = "com/mojang/brigadier/StringReader";
     private static final String METHOD_NAME = "isAllowedInUnquotedString";
     private final String className;
 
