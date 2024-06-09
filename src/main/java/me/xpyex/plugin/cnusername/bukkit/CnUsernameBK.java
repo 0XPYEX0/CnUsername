@@ -11,7 +11,6 @@ import me.xpyex.module.cnusername.Logging;
 import me.xpyex.module.cnusername.UpdateChecker;
 import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
 import me.xpyex.module.cnusername.mojang.ClassVisitorStringUtil;
-import me.xpyex.module.cnusername.paper.ClassVisitorCraftPlayerProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.objectweb.asm.ClassReader;
@@ -58,32 +57,6 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
         Logging.setLogger(getServer().getLogger());
         Logging.info("已加载");
         Logging.info("如遇Bug，或需提出建议: QQ1723275529");
-
-        try {
-            // com.destroystokyo.paper.profile.CraftPlayerProfile
-            //碰运气修改CraftPlayerProfile类，万一成功了()   不过大概率不行
-            //这个类只在1.20.5+  ，旧版本出错无需考虑
-            ClassReader reader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(ClassVisitorCraftPlayerProfile.CLASS_PATH + ".class"));
-            String className = reader.getClassName().replace("/", ".");
-            Logging.info("开始修改类 " + className);
-            ClassWriter classWriter = new ClassWriter(reader, 0);
-            ClassVisitor classVisitor = new ClassVisitorCraftPlayerProfile(className, classWriter, readPluginPattern());
-            reader.accept(classVisitor, 0);
-            loadClass(className, classWriter.toByteArray());
-            Logging.info("修改完成并保存");
-            if (CnUsername.DEBUG) {
-                try {
-                    Logging.info("Debug模式开启，保存修改后的样本以供调试");
-                    Logging.info("已保存 " + className + " 类的文件样本至: " + CnUsername.saveClassFile(classWriter, className).getPath());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Logging.warning("修改CraftPlayerProfile类失败: " + e);
-            Logging.warning("1.20.5以下的版本忽略此条，无用");
-        }
 
         try {
             // net.minecraft.util.StringUtil

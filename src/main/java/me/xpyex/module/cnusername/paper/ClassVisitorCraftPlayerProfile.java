@@ -2,6 +2,7 @@ package me.xpyex.module.cnusername.paper;
 
 import me.xpyex.module.cnusername.Logging;
 import me.xpyex.module.cnusername.impl.PatternVisitor;
+import me.xpyex.module.cnusername.mojang.ClassVisitorStringUtil;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -10,8 +11,8 @@ import org.objectweb.asm.Opcodes;
 /**
  * Paper在ClassPlayerProfile.createAuthLibProfile(UUID, String)中
  * 在使用StringUtil.isValidPlayerName(String)之前还检查了一次玩家名长度
- * CnUsername能够覆写isValidPlayerName(String)，如覆写String.length()方法会造成大面积杀伤
- * 故选择覆写createAuthLibProfile(UUID, String)方法
+ * CnUsername能够覆写isValidPlayerName(String)，但覆写String.length()方法会造成大面积杀伤
+ * 故选择覆写createAuthLibProfile(UUID, String)方法，仅删除检查玩家名长度的部分，其余不变.
  */
 public class ClassVisitorCraftPlayerProfile extends PatternVisitor {
     public static final String CLASS_PATH = "com/destroystokyo/paper/profile/CraftPlayerProfile";
@@ -31,9 +32,8 @@ public class ClassVisitorCraftPlayerProfile extends PatternVisitor {
             visitor.visitVarInsn(Opcodes.ALOAD, 1);
             Label label1 = new Label();
             visitor.visitJumpInsn(Opcodes.IFNULL, label1);
-            visitor.visitLdcInsn(getPattern());
             visitor.visitVarInsn(Opcodes.ALOAD, 1);
-            visitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/regex/Pattern", "matches", "(Ljava/lang/String;Ljava/lang/CharSequence;)Z", false);
+            visitor.visitMethodInsn(Opcodes.INVOKESTATIC, ClassVisitorStringUtil.CLASS_PATH, "isValidPlayerName", "(Ljava/lang/String;)Z", false);
             Label label2 = new Label();
             visitor.visitJumpInsn(Opcodes.IFEQ, label2);
             visitor.visitLabel(label1);

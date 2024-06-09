@@ -1,8 +1,5 @@
 package me.xpyex.module.cnusername.bungee;
 
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-import me.xpyex.module.cnusername.CnUsername;
 import me.xpyex.module.cnusername.Logging;
 import me.xpyex.module.cnusername.impl.PatternVisitor;
 import org.objectweb.asm.ClassVisitor;
