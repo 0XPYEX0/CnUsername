@@ -11,7 +11,7 @@ Allow player to use Chinese chars in username of Minecraft
 1. 在[Releases](https://github.com/0XPYEX0/CnUsername/releases)中下载<br>
 2. 放入`plugins`文件夹 [仅Bukkit|BungeeCord，及其所有分支(如Spigot|Paper|WaterFall等)]<br>
 3. 插件方式加载有诸多限制，如:
-<br>    ①原版实体选择器不支持特殊名字玩家. 例如无法使用`/tp`命令，请使用`/tp "<username>"`  其中`<username>`替换为玩家名字
+<br>    ①原版实体选择器不支持特殊名字玩家. 例如无法使用`/tp`命令，请使用`/tp "<username>"`  其中`<username>`替换为玩家名字。例如: `/tp "测试玩家名"`
 <br>    ②在1.20.5+，`Paper`及其分支服务端，玩家名字长度不能长于16，否则无法进入服务器. JavaAgent加载方式不受此限制<br>
 4. 如需自定义正则匹配，请修改`plugins/CnUsername/pattern.txt`
 
