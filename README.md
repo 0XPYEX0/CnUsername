@@ -7,23 +7,27 @@ Allow player to use Chinese chars in username of Minecraft
 介绍贴: https://www.mcbbs.net/thread-1449800-1-1.html (已似)
 
 # 插件方式加载教程
+
 ### 推荐所有有条件的服主使用[JavaAgent方式](https://github.com/0XPYEX0/CnUsername?tab=readme-ov-file#javaagent%E5%8A%A0%E8%BD%BD%E6%95%99%E7%A8%8B)加载，以解锁所有功能
+
 1. 在[Releases](https://github.com/0XPYEX0/CnUsername/releases)中下载<br>
 2. 放入`plugins`文件夹 [仅Bukkit|BungeeCord，及其所有分支(如Spigot|Paper|WaterFall等)]<br>
 3. 插件方式加载有诸多限制，如:
-<br>    ①原版实体选择器不支持特殊名字玩家. 例如无法使用`/tp`命令，请使用`/tp "<username>"`  其中`<username>`替换为玩家名字
-<br>    ②在1.20.5+，`Paper`及其分支服务端，玩家名字长度不能长于16，否则无法进入服务器. JavaAgent加载方式不受此限制<br>
+   <br>    ①原版实体选择器不支持特殊名字玩家. 例如无法使用`/tp`命令，请使用`/tp "<username>"`  其中`<username>`替换为玩家名字
+   <br>    ②在1.20.5+，`Paper`及其分支服务端，玩家名字长度不能长于16，否则无法进入服务器. JavaAgent加载方式不受此限制<br>
 4. 如需自定义正则匹配，请修改`plugins/CnUsername/pattern.txt`
 
 # JavaAgent加载教程
+
 ### 推荐所有有条件的服主使用[JavaAgent方式](https://github.com/0XPYEX0/CnUsername?tab=readme-ov-file#javaagent%E5%8A%A0%E8%BD%BD%E6%95%99%E7%A8%8B)加载，以解锁所有功能
+
 1. 在[Releases](https://github.com/0XPYEX0/CnUsername/releases)中下载
 2. 放入`服务端根目录`
 3. 修改你的启动命令，在`java`后写入`-javaagent:CnUsername-version-all.jar`. 例如:
-<br>    `java -javaagent:CnUsername-1.0.7-all.jar -jar server.jar`
-<br>    **注意，此处仅为举例说明，请根据实际情况编写**
+   <br>    `java -javaagent:CnUsername-1.0.7-all.jar -jar server.jar`
+   <br>    **注意，此处仅为举例说明，请根据实际情况编写**
 4. JavaAgent加载模式可以解锁所有功能，包括但不限于:
-<br>    ①玩家名字长度可通过修改正则自定义
-<br>    ②能够正常使用原版实体选择器选择特殊名字玩家
+   <br>    ①玩家名字长度可通过修改正则自定义
+   <br>    ②能够正常使用原版实体选择器选择特殊名字玩家
 5. 如需自定义正则，修改正则表达式为`-javaagent:CnUsername-version-all.jar=<正则表达式>`，例如:
-`-javaagent:CnUsername-1.0.7-all.jar=^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_一-龥]{2,10}$`
+   `-javaagent:CnUsername-1.0.7-all.jar=^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_一-龥]{2,10}$`

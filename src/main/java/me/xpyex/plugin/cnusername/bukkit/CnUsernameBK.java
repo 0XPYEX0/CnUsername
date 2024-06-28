@@ -1,10 +1,6 @@
 package me.xpyex.plugin.cnusername.bukkit;
 
 import java.io.IOException;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.Field;
 import me.xpyex.module.cnusername.CnUsername;
 import me.xpyex.module.cnusername.CnUsernamePlugin;
 import me.xpyex.module.cnusername.Logging;
@@ -16,28 +12,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-import sun.misc.Unsafe;
 
 public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
-    private final static MethodHandle DEFINE_CLASS_METHOD;
-
-    static {
-        try {
-            Unsafe unsafeInstance;
-            Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
-            unsafeField.setAccessible(true);
-            unsafeInstance = (Unsafe) unsafeField.get(null);  //Unsafe.theUnsafe静态变量
-
-            Field lookupField = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");  //Lookup.IMPL_LOOKUP常量
-            Object lookupBase = unsafeInstance.staticFieldBase(lookupField);
-            long lookupOffset = unsafeInstance.staticFieldOffset(lookupField);
-            MethodHandles.Lookup lookup = (MethodHandles.Lookup) unsafeInstance.getObject(lookupBase, lookupOffset);
-            DEFINE_CLASS_METHOD = lookup.findVirtual(ClassLoader.class, "defineClass", MethodType.methodType(Class.class, String.class, byte[].class, int.class, int.class));
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException("初始化失败", e);
-        }
-    }
-
     /**
      * 运行中动态加载字节码
      *
@@ -46,7 +22,7 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
      */
     public static void loadClass(String className, byte[] bytes) {
         try {
-            DEFINE_CLASS_METHOD.invoke(Bukkit.class.getClassLoader(), className, bytes, 0, bytes.length);
+            CnUsernamePlugin.getDefineClassMethod().invoke(Bukkit.class.getClassLoader(), className, bytes, 0, bytes.length);
         } catch (Throwable e) {
             throw new IllegalStateException("修改类 " + className + " 失败!", e);
         }

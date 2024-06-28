@@ -34,7 +34,7 @@ public class UpdateChecker {
                 Logging.info("更新内容: " + result.get("body").getAsString());
                 Logging.info("下载地址(Github): https://github.com/0XPYEX0/CnUsername/releases");
             }
-        } catch (IOException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             Logging.warning("获取更新失败，但不影响当前使用");
         }
