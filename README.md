@@ -31,3 +31,12 @@ Allow player to use Chinese chars in username of Minecraft
    <br>    ②能够正常使用原版实体选择器选择特殊名字玩家
 5. 如需自定义正则，修改正则表达式为`-javaagent:CnUsername-version-all.jar=<正则表达式>`，例如:
    `-javaagent:CnUsername-1.0.7-all.jar=^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_一-龥]{2,10}$`
+
+
+### 注意事项
+1. 在`Paper`及其分支服务端中，需要在配置文件中修改`perform-validate-username`为`false`，否则无法进入服务器；
+2. 安装`AuthMe`插件的情况下，需修改`AuthMe`插件的配置文件`config.yml`中的`allowedNicknameCharacters`。这代表被允许的玩家名的正则表达式，否则无法进入服务器；
+3. 安装`LuckPerms`插件的情况下，需修改`LuckPerms`插件的配置文件`config.yml`中的`allow-invalid-usernames`为`true`，否则无法正常处理权限；
+4. 安装`Skript`插件的情况下，需修改`Skript`插件的配置文件`config.sk`中的`player name regex pattern`，此为正则表达式，否则无法正常使用玩家功能.
+
+默认正则规则: "^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}|CS\\-CoreLib$"
