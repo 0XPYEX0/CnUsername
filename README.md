@@ -34,4 +34,4 @@ Allow player to use Chinese chars in username of Minecraft
 3. 安装`LuckPerms`插件的情况下，需修改`LuckPerms`插件的配置文件`config.yml`中的`allow-invalid-usernames`为`true`，否则无法正常处理权限；
 4. 安装`Skript`插件的情况下，需修改`Skript`插件的配置文件`config.sk`中的`player name regex pattern`，此为正则表达式，否则无法正常使用玩家功能.
 
-默认正则规则: `^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}|CS\\-CoreLib$`
+默认正则规则: `^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}|CS\-CoreLib$`
