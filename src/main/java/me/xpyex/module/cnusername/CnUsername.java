@@ -8,6 +8,9 @@ import java.lang.instrument.Instrumentation;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.ProtectionDomain;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 import me.xpyex.module.cnusername.bungee.ClassVisitorAllowedCharacters;
 import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
 import me.xpyex.module.cnusername.mojang.ClassVisitorStringReader;
@@ -51,9 +54,17 @@ public class CnUsername {
 
     public static void premain(final String agentArgs, final Instrumentation inst) {
         Logging.info("开始载入模块 CnUsername");
-        Logging.info("如遇Bug，或需提出建议: QQ1723275529");
+        Logging.info("如遇Bug，或需提出建议: QQ群546338486 | QQ1723275529");
         Logging.info("下载地址: https://github.com/0XPYEX0/CnUsername/releases");
         Logging.info("有空可以去看看有没有更新噢~");
+        try {
+            Logging.info("开始检查banned-players.json文件，以添加补丁");
+            addToBanList("CS-CoreLib");
+            Logging.info("补丁应用完成");
+        } catch (Exception e) {
+            Logging.warning("添加补丁失败");
+            e.printStackTrace();
+        }
         Logging.info("等待Minecraft加载...");
         inst.addTransformer(new ClassFileTransformer() {
             @Override
@@ -132,5 +143,41 @@ public class CnUsername {
         File file = new File(MODULE_FOLDER, className.replace("/", ".") + ".class");
         Files.write(file.toPath(), writer.toByteArray());
         return file;
+    }
+
+    public static void addToBanList(String name) throws IOException {
+        File f = new File("banned-players.json");
+        if (f.isDirectory()) {
+            throw new RuntimeException("banned-players.json是个文件夹？\nWhy banned-players.json is a directory?");
+        }
+        if (!f.exists()) f.createNewFile();
+        String content = Files.readString(f.toPath());
+        if (content == null || content.trim().isEmpty() || "[]".equals(content.trim())) {
+            Logging.info("banned-players.json文件内容为空，执行覆写操作");
+            Files.write(f.toPath(), ("[\n" +
+                                         "  {\n" +
+                                         "    \"uuid\": \"" + UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes()) + "\",\n" +  //只需要考虑离线，在线服务器不会用CnUsername也用不了
+                                         "    \"name\": \"" + name + "\",\n" +
+                                         "    \"created\": \"" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " +0800\",\n" +
+                                         "    \"source\": \"CnUsername\",\n" +
+                                         "    \"expires\": \"forever\",\n" +
+                                         "    \"reason\": \"Invalid username\"\n" +
+                                         "  }\n" +
+                                         "]").getBytes());
+        } else if (!content.contains(name)) {
+            Logging.info("banned-players.json文件内不存在 " + name + " 玩家，执行添加操作");
+            Files.write(f.toPath(), (content.substring(0, content.length() - 1)  //去掉最后一个右中括号
+                                         + ",\n" +  //JsonArray新增
+                                         "  {\n" +
+                                         "    \"uuid\": \"" + UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes()) + "\",\n" +
+                                         "    \"name\": \"" + name + "\",\n" +
+                                         "    \"created\": \"" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " +0800\",\n" +
+                                         "    \"source\": \"CnUsername\",\n" +
+                                         "    \"expires\": \"forever\",\n" +
+                                         "    \"reason\": \"Invalid username\"\n" +
+                                         "  }\n" +
+                                         "]"
+            ).getBytes());
+        }
     }
 }

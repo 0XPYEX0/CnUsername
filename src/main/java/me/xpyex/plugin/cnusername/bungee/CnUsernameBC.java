@@ -6,7 +6,10 @@ import me.xpyex.module.cnusername.Logging;
 import me.xpyex.module.cnusername.UpdateChecker;
 import me.xpyex.module.cnusername.bungee.ClassVisitorAllowedCharacters;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.event.PreLoginEvent;
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.event.EventHandler;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -54,6 +57,15 @@ public class CnUsernameBC extends Plugin implements CnUsernamePlugin {
             e.printStackTrace();
             Logging.warning("修改失败");
         }
+        getProxy().getPluginManager().registerListener(this, new Listener() {
+            @EventHandler
+            public void onPreLogin(PreLoginEvent event) {
+                if ("CS-CoreLib".equals(event.getConnection().getName())) {
+                    event.setCancelReason("Invalid username\nCnUsername Defend");
+                    event.setCancelled(true);
+                }
+            }
+        });
     }
 
     @Override

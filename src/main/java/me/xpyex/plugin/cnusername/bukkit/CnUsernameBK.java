@@ -8,6 +8,9 @@ import me.xpyex.module.cnusername.UpdateChecker;
 import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
 import me.xpyex.module.cnusername.mojang.ClassVisitorStringUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -116,5 +119,14 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
                 }
             }
         });
+        getServer().getPluginManager().registerEvents(new Listener() {
+            @EventHandler
+            public void onPreLogin(AsyncPlayerPreLoginEvent event) {
+                if ("CS-CoreLib".equals(event.getName())) {
+                    event.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_BANNED);
+                    event.setKickMessage("Invalid username\nCnUsername Defend");
+                }
+            }
+        }, this);
     }
 }
