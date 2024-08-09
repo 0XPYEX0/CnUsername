@@ -25,18 +25,23 @@ public class ClassVisitorCraftPlayerProfile extends PatternVisitor {
         if ("createAuthLibProfile".equals(name) && (access & Opcodes.ACC_STATIC) > 0 && "(Ljava/util/UUID;Ljava/lang/String;)Lcom/mojang/authlib/GameProfile;".equals(descriptor)) {
             Logging.info("正在修改 " + getClassName() + " 类中的 " + name + "(UUID, String) 方法");
             return new MethodVisitor(Opcodes.ASM9, visitor) {  //删除该方法内第一行代码 string.length() 的检查
+                private boolean gotCheckArgument = false;
+
                 @Override
                 public void visitCode() {
                     super.visitCode();
-                    mv = null;
                 }
 
                 @Override
                 public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-                    super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
-                    if (Opcodes.INVOKESTATIC == opcode && "checkArgument".equals(name)) {
-                        mv = visitor;
+                    if (Opcodes.INVOKESTATIC == opcode && "checkArgument".equals(name)) {  //走到checkArgument时
+                        if (!gotCheckArgument) {  //如果之前还没走到过checkArgument的话
+                            gotCheckArgument = true;  //这就是第一个了
+                            mv = null;  //删除这行
+                        }
                     }
+                    super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+                    mv = visitor;  //恢复
                 }
             };
         }
