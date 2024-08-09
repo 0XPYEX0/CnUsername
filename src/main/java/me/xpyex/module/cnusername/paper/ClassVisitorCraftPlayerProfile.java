@@ -28,11 +28,6 @@ public class ClassVisitorCraftPlayerProfile extends PatternVisitor {
                 private boolean gotCheckArgument = false;
 
                 @Override
-                public void visitCode() {
-                    super.visitCode();
-                }
-
-                @Override
                 public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
                     if (Opcodes.INVOKESTATIC == opcode && "checkArgument".equals(name)) {  //走到checkArgument时
                         if (!gotCheckArgument) {  //如果之前还没走到过checkArgument的话
