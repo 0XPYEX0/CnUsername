@@ -17,7 +17,7 @@ public class ClassVisitorStringUtil extends PatternVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor visitor = super.visitMethod(access, name, descriptor, signature, exceptions);
-        if ("isValidPlayerName".equals(name) && (access & Opcodes.ACC_STATIC) > 0 && "(Ljava/lang/String;)Z".equals(descriptor)) {
+        if (("isValidPlayerName".equals(name) || "isReasonablePlayerName"/* 去你的Paper */.equals(name)) && (access & Opcodes.ACC_STATIC) > 0 && "(Ljava/lang/String;)Z".equals(descriptor)) {
             //  寻找 static boolean isValidPlayerName(String name) 方法并覆写
             Logging.info("正在修改 " + getClassName() + " 类中的 " + name + "(String) 方法");
             visitor.visitCode();
