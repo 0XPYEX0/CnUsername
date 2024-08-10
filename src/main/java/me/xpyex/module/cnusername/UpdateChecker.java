@@ -1,7 +1,5 @@
 package me.xpyex.module.cnusername;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,11 +25,14 @@ public class UpdateChecker {
             URLConnection connection = new URL(api).openConnection();
             connection.setConnectTimeout(5000);  //5s超时
 
-            JsonObject result = new GsonBuilder().disableHtmlEscaping().create().fromJson(new String(readInputStream(connection.getInputStream())), JsonObject.class);
+            String result = new String(readInputStream(connection.getInputStream())).replace("\n", "");
 
-            if (!("v" + version).equalsIgnoreCase(result.get("tag_name").getAsString())) {
-                Logging.info("发现新版本: " + result.get("tag_name").getAsString());
-                Logging.info("更新内容: " + result.get("body").getAsString());
+            String tagNameAfter = result.substring(result.indexOf("\"tag_name\":") + 11);
+            String tagName = tagNameAfter.substring(0, tagNameAfter.indexOf(",")).trim().replace(",", "").replace("\"", "");
+            String body = result.substring(result.indexOf("\"body\":") + 7).replace("]", "").replace("\"", "").trim();
+            if (!("v" + version).equalsIgnoreCase(tagName)) {
+                Logging.info("发现新版本: " + tagName);
+                Logging.info("更新内容: " + body);
                 Logging.info("下载地址(Github): https://github.com/0XPYEX0/CnUsername/releases");
             }
         } catch (Throwable e) {

@@ -63,7 +63,9 @@ public class CnUsername {
         } catch (Exception e) {
             Logging.warning("添加补丁失败");
             e.printStackTrace();
+            Logging.warning("建议服务器启动后手动封禁CS-CoreLib玩家名");
         }
+        UpdateChecker.check();
         Logging.info("等待Minecraft加载...");
         inst.addTransformer(new ClassFileTransformer() {
             @Override
@@ -85,7 +87,6 @@ public class CnUsername {
                                 case ClassVisitorAllowedCharacters.CLASS_PATH:
                                     Logging.setLogger(ProxyServer.getInstance().getLogger());  //BungeeCord Logger
                                     visitor = new ClassVisitorAllowedCharacters(className, writer, agentArgs);
-                                    UpdateChecker.check();  //此时Gson必然已加载，顺便检查更新
                                     break;
                                 case ClassVisitorCraftPlayerProfile.CLASS_PATH:
                                     visitor = new ClassVisitorCraftPlayerProfile(className, writer, agentArgs);
@@ -94,7 +95,6 @@ public class CnUsername {
                                 case ClassVisitorLoginListener.CLASS_PATH_SPIGOT:
                                 case ClassVisitorLoginListener.CLASS_PATH_YARN:
                                     visitor = new ClassVisitorLoginListener(className, writer, agentArgs);
-                                    UpdateChecker.check();  //此时Gson必然已加载，顺便检查更新
                                     break;
                                 case ClassVisitorStringReader.CLASS_PATH:
                                     visitor = new ClassVisitorStringReader(className, writer);
