@@ -46,8 +46,7 @@ public class CnUsername {
             debugResult = false;
             e.printStackTrace();
         }
-        DEBUG = debugResult;
-        if (DEBUG) {
+        if (DEBUG = debugResult) {
             Logging.info("当前Debug已启用，修改类时将会保存样本");
         }
     }
@@ -122,10 +121,14 @@ public class CnUsername {
                             e.printStackTrace();
                             Logging.warning("修改失败: " + e);
                         }
+                        break;
                     case "org/bukkit/plugin/EventExecutor$1":
-                    case "org/bukkit/Bukkit":
+                    case "org/bukkit/craftbukkit/CraftServer$2":
+                    case "org/bukkit/command/ConsoleCommandSender":
                         Logging.setLogger(Bukkit.getLogger());
-                    case "me.xpyex.plugin.xplib.bukkit.bstats.Metrics":
+                        Logging.info("CraftServer loaded");
+                        break;
+                    case "me/xpyex/plugin/xplib/bukkit/bstats/Metrics":
                         try {
                             classBeingRedefined.getConstructor(JavaPlugin.class, int.class).newInstance(Bukkit.getPluginManager().getPlugin("XPLib"), 19275);
                         } catch (ReflectiveOperationException e) {
@@ -133,6 +136,7 @@ public class CnUsername {
                             e.printStackTrace();
                             Logging.info("不用担心，这并不会影响你的使用 :)");
                         }
+                        break;
                 }
                 return null;
             }

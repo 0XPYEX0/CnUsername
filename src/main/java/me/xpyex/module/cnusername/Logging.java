@@ -15,7 +15,6 @@ public class Logging {
             return;
         }
         getLogger().info(PREFIX + s);
-        //
     }
 
     public static void warning(String s) {
@@ -24,7 +23,6 @@ public class Logging {
             return;
         }
         getLogger().warning(PREFIX + s);
-        //
     }
 
     public static Logger getLogger() {
