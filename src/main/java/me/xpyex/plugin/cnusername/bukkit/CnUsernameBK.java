@@ -42,7 +42,7 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
             ClassReader reader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(ClassVisitorStringUtil.CLASS_PATH + ".class"));
             String className = reader.getClassName().replace("/", ".");
             Logging.info("开始修改类 " + className);
-            ClassWriter classWriter = new ClassWriter(reader, 0);
+            ClassWriter classWriter = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
             ClassVisitor classVisitor = new ClassVisitorStringUtil(className, classWriter, readPluginPattern());
             reader.accept(classVisitor, 0);
             loadClass(className, classWriter.toByteArray());
@@ -79,7 +79,7 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
             }
             String className = classReader.getClassName().replace("/", ".");
             Logging.info("开始修改类 " + className);
-            ClassWriter classWriter = new ClassWriter(classReader, 0);
+            ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_FRAMES);
             ClassVisitor classVisitor = new ClassVisitorLoginListener(className, classWriter, readPluginPattern());
             classReader.accept(classVisitor, 0);
             loadClass(className, classWriter.toByteArray());

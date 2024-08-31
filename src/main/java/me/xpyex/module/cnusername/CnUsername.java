@@ -81,7 +81,7 @@ public class CnUsername {
                         Logging.info("开始修改类 " + className);
                         try {
                             ClassReader reader = new ClassReader(classFileBuffer);
-                            ClassWriter writer = new ClassWriter(reader, 0);
+                            ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
                             ClassVisitor visitor;
                             switch (className) {
                                 case ClassVisitorAllowedCharacters.CLASS_PATH:

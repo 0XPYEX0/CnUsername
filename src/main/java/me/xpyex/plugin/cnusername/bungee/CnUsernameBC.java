@@ -40,7 +40,7 @@ public class CnUsernameBC extends Plugin implements CnUsernamePlugin {
             ClassReader classReader = new ClassReader(ProxyServer.class.getClassLoader().getResourceAsStream(ClassVisitorAllowedCharacters.CLASS_PATH + ".class"));
             String className = classReader.getClassName().replace("/", ".");
             Logging.info("开始修改类 " + className);
-            ClassWriter classWriter = new ClassWriter(classReader, 0);
+            ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_FRAMES);
             ClassVisitor classVisitor = new ClassVisitorAllowedCharacters(className, classWriter, readPluginPattern());
             classReader.accept(classVisitor, 0);
             loadClass(className, classWriter.toByteArray());
