@@ -1,4 +1,4 @@
-package me.xpyex.module.cnusername;
+package me.xpyex.plugin.cnusername;
 
 import java.io.File;
 import java.lang.invoke.MethodHandle;
@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicReference;
+import me.xpyex.module.cnusername.Logging;
 import sun.misc.Unsafe;
 
 public interface CnUsernamePlugin {

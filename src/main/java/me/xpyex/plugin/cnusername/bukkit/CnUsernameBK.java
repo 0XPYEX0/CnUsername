@@ -2,7 +2,7 @@ package me.xpyex.plugin.cnusername.bukkit;
 
 import java.io.IOException;
 import me.xpyex.module.cnusername.CnUsername;
-import me.xpyex.module.cnusername.CnUsernamePlugin;
+import me.xpyex.plugin.cnusername.CnUsernamePlugin;
 import me.xpyex.module.cnusername.Logging;
 import me.xpyex.module.cnusername.UpdateChecker;
 import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
