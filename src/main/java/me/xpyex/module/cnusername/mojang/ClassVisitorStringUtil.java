@@ -1,6 +1,5 @@
 package me.xpyex.module.cnusername.mojang;
 
-import java.util.regex.Pattern;
 import me.xpyex.module.cnusername.Logging;
 import me.xpyex.module.cnusername.impl.PatternVisitor;
 import org.objectweb.asm.ClassVisitor;
