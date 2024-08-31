@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicReference;
+import me.xpyex.module.cnusername.CnUsername;
 import me.xpyex.module.cnusername.Logging;
 import sun.misc.Unsafe;
 
@@ -48,7 +49,7 @@ public interface CnUsernamePlugin {
             }
             return Files.readString(f.toPath(), StandardCharsets.UTF_8);
         } catch (Throwable e) {
-            e.printStackTrace();
+            if (CnUsername.DEBUG) e.printStackTrace();
             return null;
         }
     }

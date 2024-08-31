@@ -61,8 +61,8 @@ public class CnUsername {
             addToBanList("CS-CoreLib");
             Logging.info("补丁应用完成");
         } catch (Exception e) {
-            Logging.warning("添加补丁失败");
-            e.printStackTrace();
+            Logging.warning("添加补丁失败: " + e);
+            if (DEBUG) e.printStackTrace();
             Logging.warning("建议服务器启动后手动封禁CS-CoreLib玩家名");
         }
         UpdateChecker.check();
@@ -118,7 +118,7 @@ public class CnUsername {
                             }
                             return writer.toByteArray();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            if (DEBUG) e.printStackTrace();
                             Logging.warning("修改失败: " + e);
                         }
                         break;
@@ -133,7 +133,7 @@ public class CnUsername {
                             classBeingRedefined.getConstructor(JavaPlugin.class, int.class).newInstance(Bukkit.getPluginManager().getPlugin("XPLib"), 19275);
                         } catch (ReflectiveOperationException e) {
                             Logging.warning("无法调用XPLib的BStats库: " + e);
-                            e.printStackTrace();
+                            if (DEBUG) e.printStackTrace();
                             Logging.info("不用担心，这并不会影响你的使用 :)");
                         }
                         break;

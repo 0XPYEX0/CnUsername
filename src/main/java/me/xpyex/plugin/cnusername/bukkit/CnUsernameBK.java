@@ -56,7 +56,7 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (CnUsername.DEBUG) e.printStackTrace();
             Logging.warning("修改StringUtil类失败: " + e);
             Logging.warning("1.20.5以下的版本忽略此条，无用");
         }
@@ -93,7 +93,7 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (CnUsername.DEBUG) e.printStackTrace();
             Logging.warning("修改LoginListener类失败: " + e);
         }
     }
@@ -114,7 +114,7 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
                     metricsClass.getConstructor(JavaPlugin.class, int.class).newInstance(this, 19275);
                 } catch (ReflectiveOperationException e) {
                     Logging.warning("无法调用XPLib的BStats库: " + e);
-                    e.printStackTrace();
+                    if (CnUsername.DEBUG) e.printStackTrace();
                     Logging.info("不用担心，这并不会影响你的使用 :)");
                 }
             }

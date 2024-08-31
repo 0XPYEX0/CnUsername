@@ -54,8 +54,8 @@ public class CnUsernameBC extends Plugin implements CnUsernamePlugin {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            Logging.warning("修改失败");
+            if (CnUsername.DEBUG) e.printStackTrace();
+            Logging.warning("修改失败: " + e);
         }
         getProxy().getPluginManager().registerListener(this, new Listener() {
             @EventHandler
