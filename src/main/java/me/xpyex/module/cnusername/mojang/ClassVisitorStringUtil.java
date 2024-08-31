@@ -1,5 +1,6 @@
 package me.xpyex.module.cnusername.mojang;
 
+import java.util.regex.Pattern;
 import me.xpyex.module.cnusername.Logging;
 import me.xpyex.module.cnusername.impl.PatternVisitor;
 import org.objectweb.asm.ClassVisitor;
@@ -35,6 +36,7 @@ public class ClassVisitorStringUtil extends PatternVisitor {
 
             // Label1
             visitor.visitLabel(label1);
+            visitor.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
             visitor.visitLdcInsn(getPattern());
             visitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/regex/Pattern", "compile", "(Ljava/lang/String;)Ljava/util/regex/Pattern;", false);
             visitor.visitVarInsn(Opcodes.ALOAD, 0);
@@ -45,7 +47,7 @@ public class ClassVisitorStringUtil extends PatternVisitor {
             // Label2
             Label label2 = new Label();
             visitor.visitLabel(label2);
-            visitor.visitLocalVariable("name", "Ljava/lang/String;", null, label1, label2, 0);
+            visitor.visitLocalVariable("name", "Ljava/lang/String;", null, label0, label2, 0);
             visitor.visitMaxs(0, 0);
             visitor.visitEnd();
             return null;
