@@ -20,6 +20,7 @@ public class UpdateChecker {
     }
 
     public static void check() {
+        Logging.info("开始检查更新信息，当前版本: " + version);
         try {
             String api = "https://api.github.com/repos/0XPYEX0/CnUsername/releases/latest";
             URLConnection connection = new URL(api).openConnection();
@@ -34,6 +35,8 @@ public class UpdateChecker {
                 Logging.info("发现新版本: " + tagName);
                 Logging.info("更新内容: " + body);
                 Logging.info("下载地址(Github): https://github.com/0XPYEX0/CnUsername/releases");
+            } else {
+                Logging.info("当前版本为最新版本");
             }
         } catch (Throwable e) {
             e.printStackTrace();
