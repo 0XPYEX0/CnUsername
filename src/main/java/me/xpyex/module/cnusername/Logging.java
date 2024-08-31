@@ -13,18 +13,18 @@ public class Logging {
 
     public static void info(String s) {
         if (LOGGER.get() == null) {
-            System.out.println(ColoredConsole.toANSI("[" + FORMAT.format(new Date()) + " §aINFO§r]: " + PREFIX + s));
+            System.out.println(ColoredConsole.toANSI("[" + FORMAT.format(new Date()) + " §aINFO§r]: " + PREFIX + s + "§r"));
             return;
         }
-        getLogger().info(ColoredConsole.toANSI(PREFIX + s));
+        getLogger().info(ColoredConsole.toANSI(PREFIX + s + "§r"));
     }
 
     public static void warning(String s) {
         if (LOGGER.get() == null) {
-            System.out.println(ColoredConsole.toANSI("[" + FORMAT.format(new Date()) + " §eWARN§r]: " + PREFIX + s));
+            System.out.println(ColoredConsole.toANSI("[" + FORMAT.format(new Date()) + " §eWARN§r]: " + PREFIX + s + "§r"));
             return;
         }
-        getLogger().warning(ColoredConsole.toANSI(PREFIX + s));
+        getLogger().warning(ColoredConsole.toANSI(PREFIX + s + "§r"));
     }
 
     public static Logger getLogger() {

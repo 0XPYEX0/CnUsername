@@ -50,6 +50,7 @@ public interface CnUsernamePlugin {
             return Files.readString(f.toPath(), StandardCharsets.UTF_8);
         } catch (Throwable e) {
             if (CnUsername.DEBUG) e.printStackTrace();
+            Logging.warning("读取正则表达式失败: " + e);
             return null;
         }
     }
