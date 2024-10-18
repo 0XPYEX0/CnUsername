@@ -11,6 +11,7 @@ public class ClassVisitorLoginListener extends PatternVisitor {
     public static final String CLASS_PATH_SPIGOT = "net/minecraft/server/network/LoginListener";
     public static final String CLASS_PATH_MOJANG = "net/minecraft/server/network/ServerLoginPacketListenerImpl";
     public static final String CLASS_PATH_YARN = "net/minecraft/server/network/ServerLoginNetworkHandler";
+    public static boolean MODIFIED = false;
 
     public ClassVisitorLoginListener(String className, ClassVisitor classVisitor, String pattern) {
         super(className, classVisitor, pattern);
@@ -21,6 +22,7 @@ public class ClassVisitorLoginListener extends PatternVisitor {
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
         if ("(Ljava/lang/String;)Z".equals(descriptor) && (access & Opcodes.ACC_STATIC) > 0) {  //类内静态isValidUsername(String)方法
+            MODIFIED = true;
             Logging.info("正在修改 " + getClassName() + " 类中的 " + name + "(String) 方法");
             mv.visitCode();
             Label label0 = new Label();

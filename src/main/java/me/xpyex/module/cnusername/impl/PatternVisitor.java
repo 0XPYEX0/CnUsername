@@ -30,7 +30,7 @@ public abstract class PatternVisitor extends ClassVisitor {
                 Logging.info("不用担心，该错误不会影响本组件正常工作，但你需要改改你写的正则规则了 :)");
             }
         }
-        Logging.info("当前组件使用的正则规则为: " + s);
+        Logging.info("当前组件使用的正则规则为: §6" + s);
         this.pattern = s;
     }
 

@@ -2,6 +2,7 @@ package me.xpyex.module.cnusername;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.Runtime.Version;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
@@ -10,7 +11,10 @@ import java.nio.file.Files;
 import java.security.ProtectionDomain;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.UUID;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import me.xpyex.module.cnusername.bungee.ClassVisitorAllowedCharacters;
 import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
 import me.xpyex.module.cnusername.mojang.ClassVisitorStringReader;
@@ -27,6 +31,7 @@ public class CnUsername {
     public static final String DEFAULT_PATTERN = "^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}|CS\\-CoreLib$";
     public static final File MODULE_FOLDER = new File("CnUsername");
     public static final boolean DEBUG;
+    public static Version MC_VERSION = null;
 
     static {
         boolean debugResult;
@@ -52,10 +57,12 @@ public class CnUsername {
     }
 
     public static void premain(final String agentArgs, final Instrumentation inst) {
-        Logging.info("开始载入模块 CnUsername");
-        Logging.info("如遇Bug，或需提出建议: QQ群546338486 | QQ1723275529");
-        Logging.info("下载地址: https://github.com/0XPYEX0/CnUsername/releases");
+        System.out.println(agentArgs);
+        Logging.info("开始载入模块 §eCnUsername");
+        Logging.info("如遇Bug，或需提出建议: §aQQ群546338486 §r| §eQQ1723275529");
+        Logging.info("开源地址§6§o(GitHub)§r: https://github.com/0XPYEX0/CnUsername");
         Logging.info("有空可以去看看有没有更新噢~");
+        Logging.info("===========================================================");
         try {
             Logging.info("开始检查banned-players.json文件，以添加补丁");
             addToBanList("CS-CoreLib");
@@ -65,6 +72,8 @@ public class CnUsername {
             if (DEBUG) e.printStackTrace();
             Logging.warning("建议服务器启动后手动封禁CS-CoreLib玩家名");
         }
+        Logging.info("===========================================================");
+        Logging.info("当前服务端运行于: §e" + getMcVersion());
         UpdateChecker.check();
         Logging.info("等待Minecraft加载...");
         inst.addTransformer(new ClassFileTransformer() {
@@ -89,6 +98,14 @@ public class CnUsername {
                                     visitor = new ClassVisitorAllowedCharacters(className, writer, agentArgs);
                                     break;
                                 case ClassVisitorCraftPlayerProfile.CLASS_PATH:
+                                    try {
+                                        Class.forName(ClassVisitorStringUtil.CLASS_PATH.replace("/", "."), true, loader);
+                                    } catch (ClassNotFoundException ignored) {
+                                    }
+                                    if (Version.parse("1.20.4").compareToIgnoreOptional(MC_VERSION) >= 0) {
+                                        Logging.info("服务端处于§e1.20.5以下§r版本，无需修改CraftPlayerProfile类");
+                                        return null;
+                                    }
                                     visitor = new ClassVisitorCraftPlayerProfile(className, writer, agentArgs);
                                     break;
                                 case ClassVisitorLoginListener.CLASS_PATH_MOJANG:
@@ -144,8 +161,13 @@ public class CnUsername {
     }
 
     public static File saveClassFile(ClassWriter writer, String className) throws IOException {
+        return saveClassFile(writer.toByteArray(), className);
+        //
+    }
+
+    public static File saveClassFile(byte[] data, String className) throws IOException {
         File file = new File(MODULE_FOLDER, className.replace("/", ".") + ".class");
-        Files.write(file.toPath(), writer.toByteArray());
+        Files.write(file.toPath(), data);
         return file;
     }
 
@@ -183,5 +205,34 @@ public class CnUsername {
                                          "]"
             ).getBytes());
         }
+    }
+
+    public static Version getMcVersion() {
+        if (MC_VERSION == null) {
+            File properties = new File("server.properties").getAbsoluteFile();
+            files: for (File file : properties.getParentFile().listFiles()) {
+                if (file.isFile() && file.getName().endsWith(".jar")) {
+                    try (JarFile jar = new JarFile(file)) {
+                        Enumeration<JarEntry> enumFiles = jar.entries();
+                        while (enumFiles.hasMoreElements()) {
+                            JarEntry entry = enumFiles.nextElement();
+                            String entryName = entry.getName();
+                            if (entryName.contains("META-INF/versions/1.") && entryName.endsWith("/")) {
+                                String[] split = entryName.split("/");
+                                MC_VERSION = Version.parse(split[split.length - 1]);
+                                break files;
+                            } else if (entryName.contains("META-INF/versions/") && (entryName.endsWith(".jar") || entryName.endsWith(".jar.patch"))) {
+                                String[] split = entryName.split("/");
+                                MC_VERSION = Version.parse(split[split.length - 1].split("-")[1]);
+                                break files;
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (DEBUG) e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return MC_VERSION;
     }
 }
