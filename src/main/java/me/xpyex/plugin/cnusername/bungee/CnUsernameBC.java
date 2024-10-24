@@ -14,6 +14,8 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
+import java.lang.instrument.Instrumentation;
+
 public class CnUsernameBC extends Plugin implements CnUsernamePlugin {
 
     /**
@@ -36,6 +38,26 @@ public class CnUsernameBC extends Plugin implements CnUsernamePlugin {
         Logging.info("已加载");
         Logging.info("如遇Bug，或需提出建议: QQ1723275529");
         getProxy().getScheduler().runAsync(this, UpdateChecker::check);
+
+        Instrumentation instrumentation = instrumentationOrNull();
+        if (instrumentation == null) {
+            applyLegacy();
+        } else {
+            applyInstrumentation(instrumentation);
+        }
+
+        getProxy().getPluginManager().registerListener(this, new Listener() {
+            @EventHandler
+            public void onPreLogin(PreLoginEvent event) {
+                if ("CS-CoreLib".equals(event.getConnection().getName())) {
+                    event.setCancelReason("Invalid username\nCnUsername Defend");
+                    event.setCancelled(true);
+                }
+            }
+        });
+    }
+
+    private void applyLegacy() {
         try {
             ClassReader classReader = new ClassReader(ProxyServer.class.getClassLoader().getResourceAsStream(ClassVisitorAllowedCharacters.CLASS_PATH + ".class"));
             String className = classReader.getClassName().replace("/", ".");
@@ -57,15 +79,6 @@ public class CnUsernameBC extends Plugin implements CnUsernamePlugin {
             if (CnUsername.DEBUG) e.printStackTrace();
             Logging.warning("修改失败: " + e);
         }
-        getProxy().getPluginManager().registerListener(this, new Listener() {
-            @EventHandler
-            public void onPreLogin(PreLoginEvent event) {
-                if ("CS-CoreLib".equals(event.getConnection().getName())) {
-                    event.setCancelReason("Invalid username\nCnUsername Defend");
-                    event.setCancelled(true);
-                }
-            }
-        });
     }
 
     @Override

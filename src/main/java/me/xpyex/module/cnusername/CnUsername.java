@@ -20,6 +20,9 @@ import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
 import me.xpyex.module.cnusername.mojang.ClassVisitorStringReader;
 import me.xpyex.module.cnusername.mojang.ClassVisitorStringUtil;
 import me.xpyex.module.cnusername.paper.ClassVisitorCraftPlayerProfile;
+import me.xpyex.module.cnusername.pass.Pass;
+import me.xpyex.module.cnusername.pass.PassRegistry;
+import me.xpyex.module.cnusername.pass.RetransformPass;
 import net.md_5.bungee.api.ProxyServer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,7 +60,7 @@ public class CnUsername {
     }
 
     public static void premain(final String agentArgs, final Instrumentation inst) {
-        Logging.debug(agentArgs);
+        System.out.println(agentArgs);
         Logging.info("开始载入模块 §eCnUsername");
         Logging.info("如遇Bug，或需提出建议: §aQQ群546338486 §r| §eQQ1723275529");
         Logging.info("开源地址§6§o(GitHub)§r: https://github.com/0XPYEX0/CnUsername");
@@ -78,66 +81,38 @@ public class CnUsername {
         Logging.info("等待Minecraft加载...");
         inst.addTransformer(new ClassFileTransformer() {
             @Override
-            public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classFileBuffer) throws IllegalClassFormatException {
-                switch (className) {
-                    case ClassVisitorAllowedCharacters.CLASS_PATH:
-                    case ClassVisitorCraftPlayerProfile.CLASS_PATH:
-                    case ClassVisitorLoginListener.CLASS_PATH_MOJANG:
-                    case ClassVisitorLoginListener.CLASS_PATH_SPIGOT:
-                    case ClassVisitorLoginListener.CLASS_PATH_YARN:
-                    case ClassVisitorStringReader.CLASS_PATH:
-                    case ClassVisitorStringUtil.CLASS_PATH:
-                        Logging.debug(className);
-                        Logging.info("开始修改类 " + className);
-                        try {
-                            ClassReader reader = new ClassReader(classFileBuffer);
-                            ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
-                            ClassVisitor visitor;
-                            switch (className) {
-                                case ClassVisitorAllowedCharacters.CLASS_PATH:
-                                    Logging.setLogger(ProxyServer.getInstance().getLogger());  //BungeeCord Logger
-                                    visitor = new ClassVisitorAllowedCharacters(className, writer, agentArgs);
-                                    break;
-                                case ClassVisitorCraftPlayerProfile.CLASS_PATH:
-                                    if (Version.parse("1.20.4").compareToIgnoreOptional(MC_VERSION) >= 0) {
-                                        Logging.info("服务端处于§e1.20.5以下§r版本，无需修改CraftPlayerProfile类");
-                                        return null;
-                                    }
-                                    visitor = new ClassVisitorCraftPlayerProfile(className, writer, agentArgs);
-                                    break;
-                                case ClassVisitorLoginListener.CLASS_PATH_MOJANG:
-                                case ClassVisitorLoginListener.CLASS_PATH_SPIGOT:
-                                case ClassVisitorLoginListener.CLASS_PATH_YARN:
-                                    visitor = new ClassVisitorLoginListener(className, writer, agentArgs);
-                                    break;
-                                case ClassVisitorStringReader.CLASS_PATH:
-                                    visitor = new ClassVisitorStringReader(className, writer);
-                                    break;
-                                case ClassVisitorStringUtil.CLASS_PATH:
-                                    visitor = new ClassVisitorStringUtil(className, writer, agentArgs);
-                                    break;
-                                default:
-                                    Logging.info("修改失败: 未捕捉className");
-                                    return null;
-                            }
-                            reader.accept(visitor, 0);
-                            Logging.info("修改完成并保存");
-                            if (DEBUG) {
-                                try {
-                                    Logging.info("Debug模式开启，保存修改后的样本以供调试");
-                                    Logging.info("已保存 " + className + " 类的文件样本至: " + saveClassFile(writer, className).getPath());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            return writer.toByteArray();
-                        } catch (Exception e) {
-                            if (DEBUG) e.printStackTrace();
-                            Logging.warning("修改失败: " + e);
-                        }
-                        break;
+            public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
+                // fail fast, ensure not loop load
+                if (loader == null || className.startsWith("me/xpyex/module/cnusername/") || className.startsWith("me/xpyex/plugin/cnusername/")) {
+                    return null;
                 }
-                return null;
+
+                Pass pass = PassRegistry.getPass(className);
+                if (pass == null || PassRegistry.isModified(className)) {
+                    return null;
+                }
+
+                if (pass instanceof RetransformPass) {
+                    ((RetransformPass) pass).retransform(classBeingRedefined, agentArgs);
+                }
+
+                ClassReader reader = new ClassReader(classfileBuffer);
+                ClassWriter classWriter = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
+                ClassVisitor classVisitor = pass.create(className.replace('/', '.'), classWriter, agentArgs);
+                reader.accept(classVisitor, 0);
+                byte[] modifiedClassfileBuffer = classWriter.toByteArray();
+
+                if (DEBUG) {
+                    try {
+                        Logging.info("Debug模式开启，保存修改后的样本以供调试");
+                        Logging.info("已保存 " + className + " 类的文件样本至: " + saveClassFile(modifiedClassfileBuffer, className).getPath());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                PassRegistry.setModified(className);
+                return modifiedClassfileBuffer;
             }
         });
     }
