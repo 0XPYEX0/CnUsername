@@ -27,6 +27,16 @@ public class Logging {
         getLogger().warning(ColoredConsole.toANSI(PREFIX + s + "§r"));
     }
 
+    public static void debug(String s) {
+        if (CnUsername.DEBUG) {
+            if (LOGGER.get() == null) {
+                System.out.println(ColoredConsole.toANSI("[" + FORMAT.format(new Date()) + " §9DEBUG§r]: " + PREFIX + s + "§r"));
+                return;
+            }
+            getLogger().info(ColoredConsole.toANSI(PREFIX + s + "§r"));
+        }
+    }
+
     public static Logger getLogger() {
         return LOGGER.get();
         //

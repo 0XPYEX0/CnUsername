@@ -5,6 +5,7 @@ import java.lang.Runtime.Version;
 import me.xpyex.module.cnusername.CnUsername;
 import me.xpyex.module.cnusername.Logging;
 import me.xpyex.module.cnusername.UpdateChecker;
+import me.xpyex.module.cnusername.impl.PatternVisitor;
 import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
 import me.xpyex.module.cnusername.mojang.ClassVisitorStringUtil;
 import me.xpyex.module.cnusername.paper.ClassVisitorCraftPlayerProfile;
@@ -44,7 +45,7 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
                 // net.minecraft.util.StringUtil
                 ClassReader reader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(ClassVisitorStringUtil.CLASS_PATH + ".class"));
                 String className = reader.getClassName().replace("/", ".");
-                byte[] data = modifyClass(reader);
+                byte[] data = modifyClass(reader, ClassVisitorStringUtil.class);
                 loadClass(className, data);
                 Logging.info("修改完成并保存");
                 if (CnUsername.DEBUG) {
@@ -64,7 +65,7 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
                 // com.destroystokyo.paper.profile.CraftPlayerProfile
                 ClassReader reader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(ClassVisitorCraftPlayerProfile.CLASS_PATH + ".class"));
                 String className = reader.getClassName().replace("/", ".");
-                byte[] data = modifyClass(reader);
+                byte[] data = modifyClass(reader, ClassVisitorCraftPlayerProfile.class);
                 loadClass(className, data);
                 Logging.info("修改完成并保存");
                 if (CnUsername.DEBUG) {
@@ -118,7 +119,7 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
                 throw new IllegalStateException("无法读取对应Class: Class可能不存在，或Class先于插件加载.");
             }
             String className = classReader.getClassName().replace("/", ".");
-            byte[] data = modifyClass(classReader);
+            byte[] data = modifyClass(classReader, ClassVisitorLoginListener.class);
             loadClass(className, data);
             Logging.info("修改完成并保存");
             if (CnUsername.DEBUG) {
@@ -168,12 +169,17 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
         }, this);
     }
 
-    private byte[] modifyClass(ClassReader reader) {
+    private byte[] modifyClass(ClassReader reader, Class<? extends PatternVisitor> type) {
         String className = reader.getClassName().replace("/", ".");
         Logging.info("开始修改类 " + className);
         ClassWriter classWriter = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
-        ClassVisitor classVisitor = new ClassVisitorLoginListener(className, classWriter, readPluginPattern());
-        reader.accept(classVisitor, 0);
-        return classWriter.toByteArray();
+        try {
+            type.getConstructor(String.class, ClassVisitor.class, String.class).newInstance(className, classWriter, readPluginPattern());
+            ClassVisitor classVisitor = new ClassVisitorLoginListener(className, classWriter, readPluginPattern());
+            reader.accept(classVisitor, 0);
+            return classWriter.toByteArray();
+        } catch (ReflectiveOperationException e) {
+            return new byte[0];
+        }
     }
 }

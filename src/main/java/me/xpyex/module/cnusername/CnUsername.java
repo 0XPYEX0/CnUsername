@@ -57,7 +57,7 @@ public class CnUsername {
     }
 
     public static void premain(final String agentArgs, final Instrumentation inst) {
-        System.out.println(agentArgs);
+        Logging.debug(agentArgs);
         Logging.info("开始载入模块 §eCnUsername");
         Logging.info("如遇Bug，或需提出建议: §aQQ群546338486 §r| §eQQ1723275529");
         Logging.info("开源地址§6§o(GitHub)§r: https://github.com/0XPYEX0/CnUsername");
@@ -87,6 +87,7 @@ public class CnUsername {
                     case ClassVisitorLoginListener.CLASS_PATH_YARN:
                     case ClassVisitorStringReader.CLASS_PATH:
                     case ClassVisitorStringUtil.CLASS_PATH:
+                        Logging.debug(className);
                         Logging.info("开始修改类 " + className);
                         try {
                             ClassReader reader = new ClassReader(classFileBuffer);
@@ -98,10 +99,6 @@ public class CnUsername {
                                     visitor = new ClassVisitorAllowedCharacters(className, writer, agentArgs);
                                     break;
                                 case ClassVisitorCraftPlayerProfile.CLASS_PATH:
-                                    try {
-                                        Class.forName(ClassVisitorStringUtil.CLASS_PATH.replace("/", "."), true, loader);
-                                    } catch (ClassNotFoundException ignored) {
-                                    }
                                     if (Version.parse("1.20.4").compareToIgnoreOptional(MC_VERSION) >= 0) {
                                         Logging.info("服务端处于§e1.20.5以下§r版本，无需修改CraftPlayerProfile类");
                                         return null;
