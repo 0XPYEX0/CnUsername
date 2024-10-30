@@ -2,14 +2,27 @@ package me.xpyex.plugin.cnusername.bukkit;
 
 import java.io.IOException;
 import java.lang.Runtime.Version;
+import java.lang.instrument.ClassFileTransformer;
+import java.lang.instrument.IllegalClassFormatException;
+import java.lang.instrument.Instrumentation;
+import java.lang.instrument.UnmodifiableClassException;
+import java.security.ProtectionDomain;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import bot.inker.acj.JvmHacker;
 import me.xpyex.module.cnusername.CnUsername;
 import me.xpyex.module.cnusername.Logging;
 import me.xpyex.module.cnusername.UpdateChecker;
 import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
 import me.xpyex.module.cnusername.mojang.ClassVisitorStringUtil;
 import me.xpyex.module.cnusername.paper.ClassVisitorCraftPlayerProfile;
+import me.xpyex.module.cnusername.pass.Pass;
+import me.xpyex.module.cnusername.pass.PassRegistry;
 import me.xpyex.plugin.cnusername.CnUsernamePlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.Instrument;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -37,48 +50,58 @@ public final class CnUsernameBK extends JavaPlugin implements CnUsernamePlugin {
             return;
         }
 
-
         if (version.compareToIgnoreOptional(VER_1_20_4) > 0) {
             Logging.info("检测到服务端为§e1.20.4§r以上版本");
-            try {
-                // net.minecraft.util.StringUtil
-                ClassReader reader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(ClassVisitorStringUtil.CLASS_PATH + ".class"));
-                String className = reader.getClassName().replace("/", ".");
-                byte[] data = modifyClass(reader);
-                loadClass(className, data);
-                Logging.info("修改完成并保存");
-                if (CnUsername.DEBUG) {
-                    try {
-                        Logging.info("Debug模式开启，保存修改后的样本以供调试");
-                        Logging.info("已保存 " + className + " 类的文件样本至: " + CnUsername.saveClassFile(data, className).getPath());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            } catch (Exception e) {
-                if (CnUsername.DEBUG) e.printStackTrace();
-                Logging.warning("修改§cStringUtil类失败: " + e);
-            }
 
-            try {
-                // com.destroystokyo.paper.profile.CraftPlayerProfile
-                ClassReader reader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(ClassVisitorCraftPlayerProfile.CLASS_PATH + ".class"));
-                String className = reader.getClassName().replace("/", ".");
-                byte[] data = modifyClass(reader);
-                loadClass(className, data);
-                Logging.info("修改完成并保存");
-                if (CnUsername.DEBUG) {
-                    try {
-                        Logging.info("Debug模式开启，保存修改后的样本以供调试");
-                        Logging.info("已保存 " + className + " 类的文件样本至: " + CnUsername.saveClassFile(data, className).getPath());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            } catch (Exception e) {
-                if (CnUsername.DEBUG) e.printStackTrace();
-                Logging.warning("修改CraftPlayerProfile类失败: " + e);
+            Instrumentation instrumentation = instrumentationOrNull();
+
+            if (instrumentation == null) {
+                applyLegacy();
+            } else {
+                applyInstrumentation(instrumentation);
             }
+        }
+    }
+
+    private void applyLegacy() {
+        try {
+            // net.minecraft.util.StringUtil
+            ClassReader reader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(ClassVisitorStringUtil.CLASS_PATH + ".class"));
+            String className = reader.getClassName().replace("/", ".");
+            byte[] data = modifyClass(reader);
+            loadClass(className, data);
+            Logging.info("修改完成并保存");
+            if (CnUsername.DEBUG) {
+                try {
+                    Logging.info("Debug模式开启，保存修改后的样本以供调试");
+                    Logging.info("已保存 " + className + " 类的文件样本至: " + CnUsername.saveClassFile(data, className).getPath());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            if (CnUsername.DEBUG) e.printStackTrace();
+            Logging.warning("修改§cStringUtil类失败: " + e);
+        }
+
+        try {
+            // com.destroystokyo.paper.profile.CraftPlayerProfile
+            ClassReader reader = new ClassReader(Bukkit.class.getClassLoader().getResourceAsStream(ClassVisitorCraftPlayerProfile.CLASS_PATH + ".class"));
+            String className = reader.getClassName().replace("/", ".");
+            byte[] data = modifyClass(reader);
+            loadClass(className, data);
+            Logging.info("修改完成并保存");
+            if (CnUsername.DEBUG) {
+                try {
+                    Logging.info("Debug模式开启，保存修改后的样本以供调试");
+                    Logging.info("已保存 " + className + " 类的文件样本至: " + CnUsername.saveClassFile(data, className).getPath());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            if (CnUsername.DEBUG) e.printStackTrace();
+            Logging.warning("修改CraftPlayerProfile类失败: " + e);
         }
     }
 
