@@ -29,8 +29,8 @@ Allow player to use Chinese chars in username of Minecraft
 4. JavaAgent加载模式可以解锁所有功能，包括但不限于:
    <br>    ①玩家名字长度可通过修改正则自定义
    <br>    ②能够正常使用原版实体选择器选择特殊名字玩家
-5. 如需自定义正则，修改前面启动命令为`-javaagent:CnUsername-<version>-all.jar=<正则表达式>`，例如:
-   `-javaagent:CnUsername-1.0.7-all.jar=^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_一-龥]{2,10}$`
+5. 如需自定义正则，修改前面启动命令为`-javaagent:CnUsername-<version>-all.jar="<正则表达式>"`，例如:
+   `-javaagent:CnUsername-1.0.7-all.jar="^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_一-龥]{2,10}$"`
 
 ### 注意事项
 
