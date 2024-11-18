@@ -10,7 +10,7 @@ Allow player to use Chinese chars in username of Minecraft
 
 ### 推荐所有有条件的服主使用[JavaAgent方式](https://github.com/0XPYEX0/CnUsername?tab=readme-ov-file#javaagent%E5%8A%A0%E8%BD%BD%E6%95%99%E7%A8%8B)加载，以解锁所有功能
 
-1. 在[Releases](releases/)中下载<br>
+1. 在[Releases](https://github.com/0XPYEX0/CnUsername/releases)中下载<br>
 2. 放入`plugins`文件夹 [仅Bukkit|BungeeCord，及其所有分支(如Spigot|Paper|WaterFall等)]<br>
 3. 插件方式加载有诸多限制，如:
    <br>    ①原版实体选择器不支持特殊名字玩家. 例如无法使用`/tp`命令，请使用`/tp "<username>"`  其中`<username>`替换为玩家名字
@@ -21,7 +21,7 @@ Allow player to use Chinese chars in username of Minecraft
 
 ### 推荐所有有条件的服主使用[JavaAgent方式](https://github.com/0XPYEX0/CnUsername?tab=readme-ov-file#javaagent%E5%8A%A0%E8%BD%BD%E6%95%99%E7%A8%8B)加载，以解锁所有功能
 
-1. 在[Releases](releases/)中下载
+1. 在[Releases](https://github.com/0XPYEX0/CnUsername/releases)中下载
 2. 放入`服务端根目录`
 3. 修改你的启动命令，在`java`后写入`-javaagent:CnUsername-version-all.jar`. 例如:
    <br>    `java -javaagent:CnUsername-1.0.7-all.jar -jar server.jar`
@@ -34,7 +34,7 @@ Allow player to use Chinese chars in username of Minecraft
 
 ### 注意事项
 
-1. 在`Paper`及其分支服务端中，需要在配置文件中修改`perform-username-validation`为`false`，否则无法进入服务器；
+1. 在`Paper`及其分支服务端中，需要在配置文件中修改`perform-validate-username`为`false`，否则无法进入服务器；
 2. 安装`AuthMe`插件的情况下，需修改`AuthMe`插件的配置文件`config.yml`中的`allowedNicknameCharacters`
    。这代表被允许的玩家名的正则表达式，否则无法进入服务器；
 3. 安装`LuckPerms`插件的情况下，需修改`LuckPerms`插件的配置文件`config.yml`中的`allow-invalid-usernames`为`true`
