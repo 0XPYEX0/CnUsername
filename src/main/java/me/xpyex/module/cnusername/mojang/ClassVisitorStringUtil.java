@@ -29,25 +29,27 @@ public class ClassVisitorStringUtil extends PatternVisitor {
             visitor.visitVarInsn(Opcodes.ALOAD, 0);
             visitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/String", "isEmpty", "()Z", false);
             Label label1 = new Label();
-            visitor.visitJumpInsn(Opcodes.IFEQ, label1);
-            visitor.visitInsn(Opcodes.ICONST_1);
-            visitor.visitInsn(Opcodes.IRETURN);
-
-            // Label1
+            visitor.visitJumpInsn(Opcodes.IFNE, label1);
+            visitor.visitVarInsn(Opcodes.ALOAD, 0);
+            visitor.visitLdcInsn(getPattern());
+            visitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/String", "matches", "(Ljava/lang/String;)Z", false);
+            Label label2 = new Label();
+            visitor.visitJumpInsn(Opcodes.IFEQ, label2);
             visitor.visitLabel(label1);
             visitor.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-            visitor.visitLdcInsn(getPattern());
-            visitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/regex/Pattern", "compile", "(Ljava/lang/String;)Ljava/util/regex/Pattern;", false);
-            visitor.visitVarInsn(Opcodes.ALOAD, 0);
-            visitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/regex/Pattern", "matcher", "(Ljava/lang/CharSequence;)Ljava/util/regex/Matcher;", false);
-            visitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/regex/Matcher", "matches", "()Z", false);
-            visitor.visitInsn(Opcodes.IRETURN);
-
-            // Label2
-            Label label2 = new Label();
+            visitor.visitInsn(Opcodes.ICONST_1);
+            Label label3 = new Label();
+            visitor.visitJumpInsn(Opcodes.GOTO, label3);
             visitor.visitLabel(label2);
-            visitor.visitLocalVariable("name", "Ljava/lang/String;", null, label0, label2, 0);
-            visitor.visitMaxs(0, 0);
+            visitor.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+            visitor.visitInsn(Opcodes.ICONST_0);
+            visitor.visitLabel(label3);
+            visitor.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[]{Opcodes.INTEGER});
+            visitor.visitInsn(Opcodes.IRETURN);
+            Label label4 = new Label();
+            visitor.visitLabel(label4);
+            visitor.visitLocalVariable("name", "Ljava/lang/String;", null, label0, label4, 0);
+            visitor.visitMaxs(2, 1);
             visitor.visitEnd();
             return null;
         }

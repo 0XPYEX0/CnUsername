@@ -136,21 +136,6 @@ public class CnUsername {
                             Logging.warning("修改失败: " + e);
                         }
                         break;
-                    case "org/bukkit/plugin/EventExecutor$1":
-                    case "org/bukkit/craftbukkit/CraftServer$2":
-                    case "org/bukkit/command/ConsoleCommandSender":
-                        Logging.setLogger(Bukkit.getLogger());
-                        Logging.info("CraftServer loaded");
-                        break;
-                    case "me/xpyex/plugin/xplib/bukkit/bstats/Metrics":
-                        try {
-                            classBeingRedefined.getConstructor(JavaPlugin.class, int.class).newInstance(Bukkit.getPluginManager().getPlugin("XPLib"), 19275);
-                        } catch (ReflectiveOperationException e) {
-                            Logging.warning("无法调用XPLib的BStats库: " + e);
-                            if (DEBUG) e.printStackTrace();
-                            Logging.info("不用担心，这并不会影响你的使用 :)");
-                        }
-                        break;
                 }
                 return null;
             }

@@ -42,4 +42,4 @@ Allow player to use Chinese chars in username of Minecraft
 4. 安装`Skript`插件的情况下，需修改`Skript`插件的配置文件`config.sk`中的`player name regex pattern`，此为正则表达式，否则无法正常使用玩家功能.
 5. 在Docker等容器环境下，如果出现`java.nio.file.InvalidPathException: Malformed input or input contains unmappable characters`异常，可通过设置Java环境参数来解决: `JAVA_TOOL_OPTIONS='-Dfile.encoding="UTF-8" -Dsun.jnu.encoding="UTF-8"’`
 
-默认正则规则: `^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_\u4e00-\u9fa5]{2,10}$`
+默认正则规则: `^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_一-龥]{2,10}$`
