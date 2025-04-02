@@ -15,17 +15,9 @@ import java.util.Enumeration;
 import java.util.UUID;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import me.xpyex.module.cnusername.bungee.ClassVisitorAllowedCharacters;
-import me.xpyex.module.cnusername.minecraft.ClassVisitorLoginListener;
-import me.xpyex.module.cnusername.mojang.ClassVisitorStringReader;
-import me.xpyex.module.cnusername.mojang.ClassVisitorStringUtil;
-import me.xpyex.module.cnusername.paper.ClassVisitorCraftPlayerProfile;
 import me.xpyex.module.cnusername.pass.Pass;
 import me.xpyex.module.cnusername.pass.PassRegistry;
 import me.xpyex.module.cnusername.pass.RetransformPass;
-import net.md_5.bungee.api.ProxyServer;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -60,7 +52,7 @@ public class CnUsername {
     }
 
     public static void premain(final String agentArgs, final Instrumentation inst) {
-        System.out.println(agentArgs);
+        Logging.debug(agentArgs);
         Logging.info("开始载入模块 §eCnUsername");
         Logging.info("如遇Bug，或需提出建议: §aQQ群546338486 §r| §eQQ1723275529");
         Logging.info("开源地址§6§o(GitHub)§r: https://github.com/0XPYEX0/CnUsername");
