@@ -32,7 +32,7 @@ Allow player to use Chinese chars in username of Minecraft
 5. 如需自定义正则，修改前面启动命令为`-javaagent:CnUsername-<version>-all.jar="<正则表达式>"`，例如:
    `-javaagent:CnUsername-1.0.7-all.jar="^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_一-龥]{2,10}$"`
 
-### 注意事项
+# 注意事项
 
 1. 在`Paper`及其分支服务端中，需要在配置文件中修改`perform-validate-username`为`false`，否则无法进入服务器；
 2. 安装`AuthMe`插件的情况下，需修改`AuthMe`插件的配置文件`config.yml`中的`allowedNicknameCharacters`
@@ -41,5 +41,6 @@ Allow player to use Chinese chars in username of Minecraft
    ，否则无法正常处理权限；
 4. 安装`Skript`插件的情况下，需修改`Skript`插件的配置文件`config.sk`中的`player name regex pattern`，此为正则表达式，否则无法正常使用玩家功能.
 5. 在Docker等容器环境下，如果出现`java.nio.file.InvalidPathException: Malformed input or input contains unmappable characters`异常，可通过设置Java环境参数来解决: `JAVA_TOOL_OPTIONS='-Dfile.encoding="UTF-8" -Dsun.jnu.encoding="UTF-8"’`
+6. 若为Linux运行，不在容器内，也出现了5所述异常，请修改 `/etc/sysconfig/i18n` 文件，将所有的 `en_US.UTF-8` 改为 `zh_CN.UTF-8` 后重试
 
 默认正则规则: `^[a-zA-Z0-9_]{3,16}|[a-zA-Z0-9_一-龥]{2,10}$`
