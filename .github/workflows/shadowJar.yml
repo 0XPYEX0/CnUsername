@@ -39,6 +39,18 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew shadowJar
 
+    - name: Get Version
+      id: version
+      run: |
+        APP_VERSION=$(./gradlew properties -q | grep "version:" | awk '{print $2}')
+        echo "VERSION=$APP_VERSION" >> $GITHUB_OUTPUT
+
+    - name: Upload with Version
+      uses: actions/upload-artifact@v4
+      with:
+        name: CnUsername-${{ steps.version.outputs.VERSION }}-all.jar
+        path: build/libs/*.jar
+
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
     #
