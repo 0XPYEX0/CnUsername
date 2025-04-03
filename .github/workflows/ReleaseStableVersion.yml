@@ -2,6 +2,7 @@ on:
   push:
     tags:
       - "release:*"
+      - "v*"
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -10,5 +11,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: build/libs/*.jar
+          body_path: .github/ChangeLog.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
