@@ -24,7 +24,7 @@ public class UpdateChecker {
         Logging.info("开始检查更新信息");
         Logging.info("当前版本: §e" + version);
         try {
-            String api = "https://api.github.com/repos/0XPYEX0/CnUsername/releases/latest";
+            String api = "https://api.github.com/repos/XPPlugins/CnUsername/releases/latest";
             URLConnection connection = new URL(api).openConnection();
             connection.setConnectTimeout(5000);  //5s超时
 
@@ -36,7 +36,7 @@ public class UpdateChecker {
             if (!("v" + version).equalsIgnoreCase(tagName)) {
                 Logging.info("发现新版本: §e" + tagName);
                 Logging.info("更新内容: " + body.replace("\\r", "").replace("\\n", "\n"));
-                Logging.info("§6下载地址§e§o(Github):§r https://github.com/0XPYEX0/CnUsername/releases");
+                Logging.info("§6下载地址§e§o(Github):§r https://github.com/XPPlugins/CnUsername/releases");
             } else {
                 Logging.info("当前版本为最新版本");
             }
